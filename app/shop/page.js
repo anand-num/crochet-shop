@@ -1,58 +1,97 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function ShopPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const categoryFilter = searchParams.get("category"); // "item" or "pattern"
 
   useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
+    fetch("/api/products")
+      .then((res) => res.json())
+      .then((data) => {
         if (data.success) {
           setProducts(data.data);
         }
-      } catch (error) {
-        console.error("Failed to fetch products:", error);
-      } finally {
         setLoading(false);
-      }
-    }
-
-    fetchProducts();
+      })
+      .catch((err) => {
+        console.error("Failed to load products", err);
+        setLoading(false);
+      });
   }, []);
 
+  // Filter products based on navigation category selection
+  const filteredProducts = categoryFilter 
+    ? products.filter((p) => p.category === categoryFilter)
+    : products;
+
   if (loading) {
-    return <div style={{ textAlign: "center", padding: "50px" }}>Loading your crochet shop... 🧶</div>;
+    return (
+      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
+        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Gathering cozy creations... 🧶</p>
+      </main>
+    );
   }
 
   return (
-    <main style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "30px", color: "#333" }}>Welcome to My Crochet Shop 🧵</h1>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "25px" }}>
-        {products.map((product) => (
-          <Link 
+    <main style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", fontFamily: "inherit" }}>
+      <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "10px", textAlign: "center" }}>
+        {categoryFilter === "pattern" ? "Crochet Patterns 📄" : categoryFilter === "item" ? "Handmade Items 🧶" : "Our Full Collection 🛍️"}
+      </h1>
+      <p style={{ color: "var(--color-forest)", opacity: 0.85, textAlign: "center", marginBottom: "40px" }}>
+        Explore our handmade plushies, bags, and downloadable crochet guides.
+      </p>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "25px" }}>
+        {filteredProducts.map((product) => (
+          <div 
             key={product._id} 
-            href={`/shop/${product._id}`} 
-            style={{ textDecoration: "none", color: "inherit" }}
+            style={{ 
+              background: "var(--color-bg)", 
+              border: "2px solid var(--color-forest)", 
+              borderRadius: "12px", 
+              overflow: "hidden",
+              boxShadow: "0 4px 12px rgba(56, 102, 65, 0.06)",
+              display: "flex",
+              flexDirection: "column"
+            }}
           >
-            <div style={{ border: "1px solid #ddd", borderRadius: "10px", padding: "20px", boxShadow: "0 4px 8px rgba(0,0,0,0.05)", background: "#fff", cursor: "pointer", transition: "transform 0.2s" }}>
-              <img 
-                src={product.imageUrl} 
-                alt={product.name} 
-                style={{ width: "100%", height: "200px", objectFit: "cover", borderRadius: "8px" }} 
-              />
-              <h2 style={{ fontSize: "1.25rem", margin: "15px 0 10px 0" }}>{product.name}</h2>
-              <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "15px" }}>{product.description}</p>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontWeight: "bold", fontSize: "1.1rem", color: "#2b6cb0" }}>${product.price.toFixed(2)}</span>
-                <span style={{ color: "#48bb78", fontSize: "0.9rem", fontWeight: "600" }}>View Details →</span>
+            <img 
+              src={product.imageUrl} 
+              alt={product.name} 
+              style={{ width: "100%", height: "220px", objectFit: "cover" }} 
+            />
+            <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+              <div>
+                <span style={{ fontSize: "0.75rem", background: "var(--color-cream)", color: "var(--color-forest)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase" }}>
+                  {product.category === "pattern" ? "Digital Pattern" : "Physical Item"}
+                </span>
+                <h3 style={{ color: "var(--color-forest)", fontSize: "1.2rem", margin: "10px 0 5px 0" }}>{product.name}</h3>
+                <p style={{ color: "var(--color-forest)", opacity: 0.8, fontSize: "0.95rem", marginBottom: "15px" }}>
+                  ${product.price.toFixed(2)}
+                </p>
               </div>
+              <Link 
+                href={`/shop/${product._id}`}
+                style={{ 
+                  background: "var(--color-forest)", 
+                  color: "var(--color-bg)", 
+                  textAlign: "center", 
+                  padding: "10px", 
+                  borderRadius: "6px", 
+                  textDecoration: "none", 
+                  fontWeight: "600",
+                  display: "block"
+                }}
+              >
+                View Details 👁️
+              </Link>
             </div>
-          </Link>
+          </div>
         ))}
       </div>
     </main>

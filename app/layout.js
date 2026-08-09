@@ -18,11 +18,11 @@ export default function RootLayout({ children }) {
         </head>
         <body>
           {/* Navigation Bar */}
-          <header style={{ 
-            display: "flex", 
-            justifyContent: "space-between", 
-            alignItems: "center", 
-            padding: "20px 40px", 
+          <header style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "20px 40px",
             borderBottom: "2px solid var(--color-forest)",
             background: "var(--color-bg)",
             position: "sticky",
@@ -32,9 +32,11 @@ export default function RootLayout({ children }) {
             <h2 style={{ margin: 0, fontSize: "1.5rem", color: "var(--color-forest)", fontWeight: "700" }}>
               🧶 Crochet Corner
             </h2>
-            <nav style={{ display: "flex", alignItems: "center", gap: "25px", fontSize: "1.1rem", fontWeight: "600" }}>
+            <nav style={{ display: "flex", alignItems: "center", gap: "20px", fontSize: "1.05rem", fontWeight: "600" }}>
               <Link href="/" style={{ color: "var(--color-forest)" }}>Home</Link>
-              <Link href="/shop" style={{ color: "var(--color-forest)" }}>Shop</Link>
+              <Link href="/shop" style={{ color: "var(--color-forest)" }}>All Shop</Link>
+              <Link href="/shop?category=item" style={{ color: "var(--color-forest)" }}>Physical Items 🧶</Link>
+              <Link href="/shop?category=pattern" style={{ color: "var(--color-forest)" }}>PDF Patterns 📄</Link>
               <Link href="/cart" style={{ color: "var(--color-forest)" }}>Cart 🛒</Link>
 
               {/* Cleaned up Auth Actions */}

@@ -1,5 +1,5 @@
 import dbConnect from "../../../lib/mongodb";
-import Product from "../../../lib/Product";
+import Product from "../../../models/Product";
 import { NextResponse } from "next/server";
 
 const sampleProducts = [

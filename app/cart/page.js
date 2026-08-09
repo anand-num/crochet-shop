@@ -1,120 +1,128 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
+  const router = useRouter();
   const [cart, setCart] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Load cart items from localStorage when the page mounts
     const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(savedCart);
-    setLoading(false);
   }, []);
 
-  const handleRemoveItem = (id) => {
+  const updateQuantity = (id, delta) => {
+    const updatedCart = cart.map((item) => {
+      if (item._id === id) {
+        const newQty = item.quantity + delta;
+        return { ...item, quantity: newQty > 0 ? newQty : 1 };
+      }
+      return item;
+    });
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  const removeItem = (id) => {
     const updatedCart = cart.filter((item) => item._id !== id);
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  const handleClearCart = () => {
-    setCart([]);
-    localStorage.removeItem("cart");
-  };
-
-  const handleCheckout = async () => {
-    try {
-      const res = await fetch("/api/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cartItems: cart }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        // Redirect to success page
-        window.location.href = "/order-success";
-      } else {
-        alert("Checkout failed: " + data.error);
-      }
-    } catch (error) {
-      console.error("Checkout error:", error);
-      alert("Something went wrong during checkout.");
-    }
-  };
-  // Calculate total price
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  if (loading) {
-    return <div style={{ textAlign: "center", padding: "50px" }}>Loading your cart... 🛒</div>;
-  }
 
   if (cart.length === 0) {
     return (
-      <main style={{ padding: "40px", maxWidth: "800px", margin: "0 auto", fontFamily: "sans-serif", textAlign: "center" }}>
-        <h1 style={{ color: "#333", marginBottom: "20px" }}>Your Shopping Cart 🛒</h1>
-        <p style={{ color: "#666", marginBottom: "20px" }}>Your cart is currently empty. Head over to the shop to find some cute patterns!</p>
+      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Your Cart is Empty 🧶</h1>
+        <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "30px", fontSize: "1.1rem" }}>
+          Looks like you haven't added any cozy creations to your cart yet!
+        </p>
         <Link 
           href="/shop" 
-          style={{ background: "#2b6cb0", color: "#fff", padding: "10px 20px", borderRadius: "5px", textDecoration: "none" }}
+          style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "600", fontSize: "1rem" }}
         >
-          Browse Shop 🧶
+          Explore the Shop 🛍️
         </Link>
       </main>
     );
   }
 
   return (
-    <main style={{ padding: "40px", maxWidth: "800px", margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h1 style={{ color: "#333", marginBottom: "25px" }}>Your Shopping Cart 🛒</h1>
+    <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit" }}>
+      <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
+        Your Shopping Cart 🛒
+      </h1>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "30px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px" }}>
         {cart.map((item) => (
-          <div key={item._id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff", padding: "15px 20px", borderRadius: "8px", border: "1px solid #eaeaea", boxShadow: "0 2px 5px rgba(0,0,0,0.03)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-              <img src={item.imageUrl} alt={item.name} style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "6px" }} />
+          <div 
+            key={item._id} 
+            style={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center", 
+              background: "var(--color-bg)", 
+              border: "2px solid var(--color-forest)", 
+              borderRadius: "12px", 
+              padding: "20px",
+              boxShadow: "0 4px 10px rgba(56, 102, 65, 0.05)",
+              gap: "20px",
+              flexWrap: "wrap"
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+              <img 
+                src={item.imageUrl} 
+                alt={item.name} 
+                style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "8px" }} 
+              />
               <div>
-                <h3 style={{ margin: "0 0 5px 0", fontSize: "1.1rem" }}>{item.name}</h3>
-                <p style={{ margin: 0, color: "#666", fontSize: "0.9rem" }}>Price: ${item.price.toFixed(2)} | Qty: {item.quantity}</p>
+                <h3 style={{ color: "var(--color-forest)", fontSize: "1.2rem", marginBottom: "5px" }}>{item.name}</h3>
+                <p style={{ color: "var(--color-forest)", fontWeight: "600" }}>${item.price.toFixed(2)}</p>
               </div>
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <span style={{ fontWeight: "bold", color: "#2b6cb0" }}>${(item.price * item.quantity).toFixed(2)}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              <div style={{ display: "flex", alignItems: "center", border: "1px solid var(--color-forest)", borderRadius: "6px", overflow: "hidden" }}>
+                <button 
+                  onClick={() => updateQuantity(item._id, -1)}
+                  style={{ background: "transparent", border: "none", padding: "6px 12px", color: "var(--color-forest)", fontWeight: "bold" }}
+                >
+                  -
+                </button>
+                <span style={{ padding: "0 10px", color: "var(--color-forest)", fontWeight: "600" }}>{item.quantity}</span>
+                <button 
+                  onClick={() => updateQuantity(item._id, 1)}
+                  style={{ background: "transparent", border: "none", padding: "6px 12px", color: "var(--color-forest)", fontWeight: "bold" }}
+                >
+                  +
+                </button>
+              </div>
+
               <button 
-                onClick={() => handleRemoveItem(item._id)}
-                style={{ background: "#e53e3e", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer", fontSize: "0.85rem" }}
+                onClick={() => removeItem(item._id)}
+                style={{ background: "var(--color-terracotta)", color: "#fff", border: "none", padding: "8px 14px", borderRadius: "6px", fontWeight: "600" }}
               >
-                Remove
+                Remove 🗑️
               </button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Cart Summary Box */}
-      <div style={{ background: "#f7fafc", padding: "20px", borderRadius: "8px", border: "1px solid #e2e8f0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <h2 style={{ margin: "0 0 5px 0", fontSize: "1.2rem" }}>Total: ${totalPrice.toFixed(2)}</h2>
-          <p style={{ margin: 0, color: "#718096", fontSize: "0.85rem" }}>Taxes and digital pattern delivery included.</p>
-        </div>
-
-        <div style={{ display: "flex", gap: "10px" }}>
-          <button 
-            onClick={handleClearCart}
-            style={{ background: "transparent", color: "#e53e3e", border: "1px solid #e53e3e", padding: "10px 15px", borderRadius: "5px", cursor: "pointer", fontWeight: "600" }}
-          >
-            Clear Cart
-          </button>
-          <button 
-            onClick={handleCheckout}
-            style={{ background: "#48bb78", color: "#fff", border: "none", padding: "10px 20px", borderRadius: "5px", cursor: "pointer", fontWeight: "600" }}
-          >
-            Proceed to Checkout 🚀
-          </button>
-        </div>
+      {/* Cart Summary Card */}
+      <div style={{ background: "var(--color-cream)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "30px", textAlign: "right" }}>
+        <h2 style={{ color: "var(--color-forest)", fontSize: "1.8rem", marginBottom: "15px" }}>
+          Total: ${totalPrice.toFixed(2)}
+        </h2>
+        <button 
+          onClick={() => router.push("/checkout")}
+          style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px 28px", borderRadius: "8px", fontSize: "1.1rem", fontWeight: "700" }}
+        >
+          Proceed to Checkout 🔒
+        </button>
       </div>
     </main>
   );
