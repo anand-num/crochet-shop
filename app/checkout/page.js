@@ -1,11 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useUser, SignInButton } from "@clerk/nextjs";
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isBuyNow = searchParams.get("mode") === "buynow";
+
   const { isSignedIn, user, isLoaded } = useUser();
   const [cart, setCart] = useState([]);
   const [formData, setFormData] = useState({
@@ -18,8 +21,15 @@ export default function CheckoutPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
-    setCart(savedCart);
+    if (isBuyNow) {
+      // Pull only the single item selected via Buy Now
+      const directItem = JSON.parse(localStorage.getItem("directCheckoutItem")) || [];
+      setCart(directItem);
+    } else {
+      // Pull the regular shopping cart
+      const savedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      setCart(savedCart);
+    }
     
     // Auto-fill name and email if user is already signed in via Clerk
     if (user) {
@@ -29,7 +39,7 @@ export default function CheckoutPage() {
         email: user.primaryEmailAddress?.emailAddress || "",
       }));
     }
-  }, [user]);
+  }, [user, isBuyNow]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -39,7 +49,13 @@ export default function CheckoutPage() {
     e.preventDefault();
     if (cart.length === 0) return;
 
-    localStorage.removeItem("cart");
+    // Clear the correct storage item depending on the checkout mode
+    if (isBuyNow) {
+      localStorage.removeItem("directCheckoutItem");
+    } else {
+      localStorage.removeItem("cart");
+    }
+
     setIsSubmitted(true);
   };
 
@@ -66,7 +82,7 @@ export default function CheckoutPage() {
             Please sign in to your Crochet Corner account to proceed securely with your checkout.
           </p>
           <SignInButton mode="modal">
-            <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "12px 28px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem" }}>
+            <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "12px 28px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", cursor: "pointer" }}>
               Sign In to Checkout 🔒
             </button>
           </SignInButton>
@@ -99,8 +115,8 @@ export default function CheckoutPage() {
   if (cart.length === 0) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Your cart is empty!</h1>
-        <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "25px" }}>Add some items to your cart before checking out.</p>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Your checkout is empty!</h1>
+        <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "25px" }}>Add some items before checking out.</p>
         <Link 
           href="/shop" 
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "10px 22px", borderRadius: "8px", textDecoration: "none", fontWeight: "600" }}
@@ -114,7 +130,7 @@ export default function CheckoutPage() {
   return (
     <main style={{ padding: "40px 20px", maxWidth: "1000px", margin: "0 auto", fontFamily: "inherit" }}>
       <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
-        Secure Checkout 🔒
+        {isBuyNow ? "Instant Checkout ⚡" : "Secure Checkout 🔒"}
       </h1>
 
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "30px", alignItems: "start", flexWrap: "wrap" }}>
@@ -194,7 +210,7 @@ export default function CheckoutPage() {
 
           <button 
             type="submit" 
-            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", marginTop: "10px" }}
+            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", marginTop: "10px", cursor: "pointer" }}
           >
             Place Order (${totalPrice.toFixed(2)}) 🧶
           </button>

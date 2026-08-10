@@ -58,26 +58,18 @@ export default function ProductDetailPage() {
     setTimeout(() => setAdded(false), 2500);
   };
 
-  const buyNow = () => {
+const buyNow = () => {
     if (!product) return;
 
     const qtyToAdd = product.category === "pattern" ? 1 : quantity;
 
-    const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
-    const existingIndex = existingCart.findIndex((item) => item._id === product._id);
+    // 1. Isolate THIS specific product in a separate storage key
+    const directCheckoutItem = [{ ...product, quantity: qtyToAdd }];
+    localStorage.setItem("directCheckoutItem", JSON.stringify(directCheckoutItem));
 
-    if (existingIndex > -1) {
-      if (product.category !== "pattern") {
-        existingCart[existingIndex].quantity += qtyToAdd;
-      }
-    } else {
-      existingCart.push({ ...product, quantity: qtyToAdd });
-    }
-
-    localStorage.setItem("cart", JSON.stringify(existingCart));
-    router.push("/checkout");
+    // 2. Send the user to checkout with a flag indicating a direct buy-now flow
+    router.push("/checkout?mode=buynow");
   };
-
   if (loading) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>

@@ -1,13 +1,16 @@
 import "./globals.css";
 import Link from "next/link";
 import { ClerkProvider, SignInButton, UserButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 export const metadata = {
   title: "Crochet Corner 🧶",
   description: "Handmade crochet plushies, bags, and patterns",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const { userId } = await auth();
+
   return (
     <ClerkProvider>
       <html lang="en">
@@ -35,18 +38,28 @@ export default function RootLayout({ children }) {
             <nav style={{ display: "flex", alignItems: "center", gap: "20px", fontSize: "1.05rem", fontWeight: "600" }}>
               <Link href="/" style={{ color: "var(--color-forest)" }}>Home</Link>
               <Link href="/shop" style={{ color: "var(--color-forest)" }}>All Shop</Link>
-              <Link href="/shop?category=item" style={{ color: "var(--color-forest)" }}>Physical Items 🧶</Link>
-              <Link href="/shop?category=pattern" style={{ color: "var(--color-forest)" }}>PDF Patterns 📄</Link>
-              <Link href="/cart" style={{ color: "var(--color-forest)" }}>Cart 🛒</Link>
+              <Link href="/shop?category=item" style={{ color: "var(--color-forest)" }}>Items </Link>
+              <Link href="/shop?category=pattern" style={{ color: "var(--color-forest)" }}>Patterns</Link>
+              <Link href="/cart" style={{ color: "var(--color-forest)" }}>Cart</Link>
+
+              {/* My Patterns Feature: Only shows up when user is logged in */}
+              {userId && (
+                <Link href="/profile" style={{ color: "var(--color-forest)" }}>
+                  My Patterns
+                </Link>
+              )}
 
               {/* Cleaned up Auth Actions */}
               <div style={{ display: "flex", alignItems: "center", gap: "12px", marginLeft: "15px" }}>
-                <SignInButton mode="modal">
-                  <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 18px", borderRadius: "8px", fontWeight: "600" }}>
-                    Sign In
-                  </button>
-                </SignInButton>
-                <UserButton />
+                {!userId ? (
+                  <SignInButton mode="modal">
+                    <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 18px", borderRadius: "8px", fontWeight: "600" }}>
+                      Sign In
+                    </button>
+                  </SignInButton>
+                ) : (
+                  <UserButton />
+                )}
               </div>
             </nav>
           </header>
