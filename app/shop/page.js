@@ -1,50 +1,64 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function ShopPage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+// 1. Inner component that safely reads useSearchParams
+function ShopContent() {
   const searchParams = useSearchParams();
   const mainCategoryFilter = searchParams.get("category"); // "item" or "pattern"
 
-  // State variables for category dropdown filter and sorting dropdown
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("default");
+  const [sortBy, setSortBy] = useState("newest");
 
-  const categories = [
-    { label: "All Categories", value: "all" },
-    { label: "Keychain", value: "keychain" },
-    { label: "Plushie", value: "plushie" },
-    { label: "Hat", value: "hat" },
-    { label: "Earwarmer", value: "earwarmer" },
-    { label: "Scarf", value: "scarf" },
-    { label: "Purse & Pouch", value: "purse & pouch" },
-    { label: "Flowers", value: "flowes" }
-  ];
-
+  // Fetch products from API backend with strict array extraction
   useEffect(() => {
-    fetch("/api/products")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products");
+        const data = await res.json();
+        
+        // Safely extract the array regardless of how the API response is formatted
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (data.products && Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else if (data.data && Array.isArray(data.data)) {
           setProducts(data.data);
+        } else {
+          console.warn("API response is not an array:", data);
+          setProducts([]);
         }
+      } catch (error) {
+        console.error("Failed to fetch products:", error);
+        setProducts([]);
+      } finally {
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load products", err);
-        setLoading(false);
-      });
+      }
+    }
+    fetchProducts();
   }, []);
 
-  // 1. Filter products based on main navigation category and selected sub-category dropdown
-  const filteredProducts = products.filter((p) => {
-    if (mainCategoryFilter && p.category !== mainCategoryFilter && p.type !== mainCategoryFilter) {
-      // Adjust if your database schema uses different property names
+  // Reset dropdown filter whenever the navbar category changes
+  useEffect(() => {
+    setSelectedCategory("all");
+  }, [mainCategoryFilter]);
+
+  // 1. Ensure products is an array before filtering to prevent any crashes
+  const safeProducts = Array.isArray(products) ? products : [];
+
+  const filteredProducts = safeProducts.filter((p) => {
+    // Check main navbar category (?category=item or ?category=pattern)
+    if (mainCategoryFilter) {
+      if (!p.category || p.category.toLowerCase() !== mainCategoryFilter.toLowerCase()) {
+        return false;
+      }
     }
     
+    // Check sub-category dropdown filter
     if (selectedCategory !== "all") {
       const matchCategory = p.category?.toLowerCase() === selectedCategory.toLowerCase();
       const matchSubCategory = p.subCategory?.toLowerCase() === selectedCategory.toLowerCase();
@@ -55,153 +69,148 @@ export default function ShopPage() {
     return true;
   });
 
-  // 2. Sort filtered products based on selected sorting option
+  // 2. Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === "price-asc") return a.price - b.price;
     if (sortBy === "price-desc") return b.price - a.price;
-    if (sortBy === "name-az") return a.name.localeCompare(b.name);
-    return 0; // default order
+    if (sortBy === "name") return a.name.localeCompare(b.name);
+    if (sortBy === "newest") return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+    return 0;
   });
 
   if (loading) {
-    return (
-      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
-        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Gathering cozy creations... 🧶</p>
-      </main>
-    );
+    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Loading cozy items... 🧶</div>;
   }
 
   return (
-    <main style={{ padding: "40px 20px", maxWidth: "1200px", margin: "0 auto", fontFamily: "inherit" }}>
-      <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "10px", textAlign: "center" }}>
-        {mainCategoryFilter === "pattern" ? "Crochet Patterns 📄" : mainCategoryFilter === "item" ? "Handmade Items 🧶" : "Our Full Collection 🛍️"}
-      </h1>
-      <p style={{ color: "var(--color-forest)", opacity: 0.85, textAlign: "center", marginBottom: "30px" }}>
-        Explore our handmade plushies, bags, and downloadable crochet guides.
-      </p>
+    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
+      {/* Dynamic Title based on Navbar Click */}
+      <div style={{ textAlign: "center", marginBottom: "40px" }}>
+        <h1 style={{ fontSize: "2.5rem", color: "var(--color-forest)", marginBottom: "10px" }}>
+          {mainCategoryFilter === "item" ? "Crochet Items 🧸" : mainCategoryFilter === "pattern" ? "Crochet Patterns 📄" : "The Crochet Shop 🧶"}
+        </h1>
+        <p style={{ color: "#666", fontSize: "1.1rem" }}>
+          Explore our handmade collection of cozy creations and patterns.
+        </p>
+      </div>
 
-      {/* --- CLASSIC CONTROL TOOLBAR (Category Dropdown & Sort Dropdown) --- */}
+      {/* Filter and Sort Controls Bar */}
       <div style={{ 
         display: "flex", 
-        flexWrap: "wrap", 
         justifyContent: "space-between", 
         alignItems: "center", 
-        gap: "15px", 
-        marginBottom: "35px", 
-        padding: "15px 20px", 
-        background: "var(--color-cream)", 
+        flexWrap: "wrap", 
+        gap: "20px", 
+        marginBottom: "30px",
+        background: "white",
+        padding: "20px",
         borderRadius: "12px",
-        border: "1px solid var(--color-forest)"
+        boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
       }}>
-        {/* Category Filter Dropdown */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label htmlFor="category-select" style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-forest)" }}>
-            Category:
-          </label>
-          <select
-            id="category-select"
-            value={selectedCategory}
+        {/* Sub-category Dropdown Filter */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Filter by:</label>
+          <select 
+            value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: "8px",
-              border: "1px solid var(--color-forest)",
-              background: "var(--color-bg)",
-              color: "var(--color-forest)",
-              fontWeight: "600",
-              cursor: "pointer"
-            }}
+            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #ccc", outline: "none", fontWeight: "500", background: "#fff" }}
           >
-            {categories.map((cat) => (
-              <option key={cat.value} value={cat.value}>
-                {cat.label}
-              </option>
-            ))}
+            <option value="all">All Sub-categories</option>
+            <option value="keychain">Keychain</option>
+            <option value="plushie">Plushie</option>
+            <option value="hat">Hat</option>
+            <option value="earwarmer">Earwarmer</option>
+            <option value="scarf">Scarf</option>
+            <option value="purse & pouch">Purse & Pouch</option>
+            <option value="flowers">Flowers</option>
           </select>
         </div>
 
-        {/* Sort Dropdown */}
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <label htmlFor="sort-select" style={{ fontSize: "0.9rem", fontWeight: "600", color: "var(--color-forest)" }}>
-            Sort by:
-          </label>
-          <select
-            id="sort-select"
-            value={sortBy}
+        {/* Sorting Dropdown */}
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Sort by:</label>
+          <select 
+            value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              borderRadius: "8px",
-              border: "1px solid var(--color-forest)",
-              background: "var(--color-bg)",
-              color: "var(--color-forest)",
-              fontWeight: "600",
-              cursor: "pointer"
-            }}
+            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #ccc", outline: "none", fontWeight: "500", background: "#fff" }}
           >
-            <option value="default">Featured / Default</option>
+            <option value="newest">Newest First</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
-            <option value="name-az">Name: A to Z</option>
+            <option value="name">Name: A-Z</option>
           </select>
         </div>
       </div>
 
-      {/* --- PRODUCTS GRID --- */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "25px" }}>
-        {sortedProducts.length === 0 ? (
-          <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "var(--color-forest)", padding: "40px", fontSize: "1.1rem" }}>
-            No cozy creations found matching this filter. 🧶
-          </p>
-        ) : (
-          sortedProducts.map((product) => (
-            <div 
-              key={product._id} 
-              style={{ 
-                background: "var(--color-bg)", 
-                border: "2px solid var(--color-forest)", 
-                borderRadius: "12px", 
-                overflow: "hidden",
-                boxShadow: "0 4px 12px rgba(56, 102, 65, 0.06)",
-                display: "flex",
-                flexDirection: "column"
-              }}
-            >
-              <img 
-                src={product.imageUrl} 
-                alt={product.name} 
-                style={{ width: "100%", height: "220px", objectFit: "cover" }} 
-              />
+      {/* Products Grid */}
+      {sortedProducts.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "60px", color: "#777", fontSize: "1.1rem" }}>
+          No crochet items found matching your filters. Check back soon! 🧶
+        </div>
+      ) : (
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", 
+          gap: "30px" 
+        }}>
+          {sortedProducts.map((product) => (
+            <div key={product._id} style={{ 
+              background: "white", 
+              borderRadius: "12px", 
+              overflow: "hidden", 
+              boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
+              display: "flex",
+              flexDirection: "column"
+            }}>
+              <div style={{ width: "100%", height: "220px", background: "#f0f0f0" }}>
+                <img 
+                  src={product.imageUrl} 
+                  alt={product.name} 
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                />
+              </div>
               <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
                 <div>
-                  <span style={{ fontSize: "0.75rem", background: "var(--color-cream)", color: "var(--color-forest)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase" }}>
+                  <span style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#888", fontWeight: "600", letterSpacing: "0.5px" }}>
                     {product.subCategory || product.category}
                   </span>
-                  <h3 style={{ color: "var(--color-forest)", fontSize: "1.2rem", margin: "10px 0 5px 0" }}>{product.name}</h3>
-                  <p style={{ color: "var(--color-forest)", opacity: 0.8, fontSize: "0.95rem", marginBottom: "15px" }}>
-                    ${product.price.toFixed(2)}
+                  <h3 style={{ margin: "8px 0", fontSize: "1.2rem", color: "var(--color-forest)" }}>
+                    {product.name}
+                  </h3>
+                  <p style={{ color: "#555", fontSize: "0.95rem", margin: "0 0 15px 0", lineHeight: "1.4" }}>
+                    {product.description}
                   </p>
                 </div>
-                <Link 
-                  href={`/shop/${product._id}`}
-                  style={{ 
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "15px" }}>
+                  <span style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-forest)" }}>
+                    ${product.price.toFixed(2)}
+                  </span>
+                  <Link href={`/shop/${product._id}`} style={{ 
                     background: "var(--color-forest)", 
-                    color: "var(--color-bg)", 
-                    textAlign: "center", 
-                    padding: "10px", 
-                    borderRadius: "6px", 
+                    color: "white", 
+                    padding: "8px 16px", 
+                    borderRadius: "8px", 
                     textDecoration: "none", 
-                    fontWeight: "600",
-                    display: "block"
-                  }}
-                >
-                  View Details 👁️
-                </Link>
+                    fontSize: "0.9rem", 
+                    fontWeight: "600" 
+                  }}>
+                    View Details
+                  </Link>
+                </div>
               </div>
             </div>
-          ))
-        )}
-      </div>
-    </main>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// 2. Default export wraps the shop content inside a Suspense boundary
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Loading shop... 🧶</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }

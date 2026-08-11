@@ -20,7 +20,7 @@ export default async function RootLayout({ children }) {
           <link href="https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
         </head>
         <body style={{ display: "flex", flexDirection: "column", minHeight: "100vh", margin: 0 }}>
-          {/* Navigation Bar */}
+          {/* Navigation Bar - Using CSS Grid for Dead-Center Menu */}
           <header style={{
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
@@ -34,9 +34,11 @@ export default async function RootLayout({ children }) {
           }}>
             {/* 1. Left Section: Logo */}
             <div style={{ justifySelf: "start" }}>
-              <h2 style={{ margin: 0, fontSize: "1.5rem", color: "var(--color-forest)", fontWeight: "700" }}>
-                🧶 Crochet Corner
-              </h2>
+              <Link href="/" style={{ textDecoration: "none" }}>
+                <h2 style={{ margin: 0, fontSize: "1.5rem", color: "var(--color-forest)", fontWeight: "700" }}>
+                  🧶 Crochet Corner
+                </h2>
+              </Link>
             </div>
 
             {/* 2. Middle Section: Navigation Links (Dead Center) */}
