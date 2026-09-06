@@ -20,7 +20,6 @@ function ShopContent() {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
-        
         // Safely extract the array regardless of how the API response is formatted
         if (Array.isArray(data)) {
           setProducts(data);
@@ -89,7 +88,7 @@ function ShopContent() {
         <h1 style={{ fontSize: "2.5rem", color: "var(--color-forest)", marginBottom: "10px" }}>
           {mainCategoryFilter === "item" ? "Crochet Items 🧸" : mainCategoryFilter === "pattern" ? "Crochet Patterns 📄" : "The Crochet Shop 🧶"}
         </h1>
-        <p style={{ color: "#666", fontSize: "1.1rem" }}>
+        <p style={{ color: "var(--color-text)", opacity: 0.8, fontSize: "1.1rem" }}>
           Explore our handmade collection of cozy creations and patterns.
         </p>
       </div>
@@ -102,10 +101,12 @@ function ShopContent() {
         flexWrap: "wrap", 
         gap: "20px", 
         marginBottom: "30px",
-        background: "white",
+        background: "var(--color-bg)",
+        border: "1px solid var(--color-forest)",
         padding: "20px",
         borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
+        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+        transition: "background-color 0.3s ease, border-color 0.3s ease"
       }}>
         {/* Sub-category Dropdown Filter */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -113,16 +114,24 @@ function ShopContent() {
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #ccc", outline: "none", fontWeight: "500", background: "#fff" }}
+            style={{ 
+              padding: "8px 12px", 
+              borderRadius: "8px", 
+              border: "1px solid var(--color-forest)", 
+              outline: "none", 
+              fontWeight: "500", 
+              background: "var(--color-bg)", 
+              color: "var(--color-text)" 
+            }}
           >
-            <option value="all">All Sub-categories</option>
-            <option value="keychain">Keychain</option>
-            <option value="plushie">Plushie</option>
-            <option value="hat">Hat</option>
-            <option value="earwarmer">Earwarmer</option>
-            <option value="scarf">Scarf</option>
-            <option value="purse & pouch">Purse & Pouch</option>
-            <option value="flowers">Flowers</option>
+            <option value="all" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>All Sub-categories</option>
+            <option value="keychain" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Keychain</option>
+            <option value="plushie" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Plushie</option>
+            <option value="hat" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Hat</option>
+            <option value="earwarmer" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Earwarmer</option>
+            <option value="scarf" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Scarf</option>
+            <option value="purse & pouch" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Purse & Pouch</option>
+            <option value="flowers" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Flowers</option>
           </select>
         </div>
 
@@ -132,19 +141,27 @@ function ShopContent() {
           <select 
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
-            style={{ padding: "8px 12px", borderRadius: "8px", border: "1px solid #ccc", outline: "none", fontWeight: "500", background: "#fff" }}
+            style={{ 
+              padding: "8px 12px", 
+              borderRadius: "8px", 
+              border: "1px solid var(--color-forest)", 
+              outline: "none", 
+              fontWeight: "500", 
+              background: "var(--color-bg)", 
+              color: "var(--color-text)" 
+            }}
           >
-            <option value="newest">Newest First</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
-            <option value="name">Name: A-Z</option>
+            <option value="newest" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Newest First</option>
+            <option value="price-asc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Price: Low to High</option>
+            <option value="price-desc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Price: High to Low</option>
+            <option value="name" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Name: A-Z</option>
           </select>
         </div>
       </div>
 
       {/* Products Grid */}
       {sortedProducts.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "60px", color: "#777", fontSize: "1.1rem" }}>
+        <div style={{ textAlign: "center", padding: "60px", color: "var(--color-text)", opacity: 0.7, fontSize: "1.1rem" }}>
           No crochet items found matching your filters. Check back soon! 🧶
         </div>
       ) : (
@@ -155,14 +172,16 @@ function ShopContent() {
         }}>
           {sortedProducts.map((product) => (
             <div key={product._id} style={{ 
-              background: "white", 
+              background: "var(--color-bg)", 
+              border: "1px solid var(--color-forest)",
               borderRadius: "12px", 
               overflow: "hidden", 
               boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
               display: "flex",
-              flexDirection: "column"
+              flexDirection: "column",
+              transition: "background-color 0.3s ease, border-color 0.3s ease"
             }}>
-              <div style={{ width: "100%", height: "220px", background: "#f0f0f0" }}>
+              <div style={{ width: "100%", height: "220px", background: "rgba(0,0,0,0.05)" }}>
                 <img 
                   src={product.imageUrl} 
                   alt={product.name} 
@@ -171,13 +190,13 @@ function ShopContent() {
               </div>
               <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
                 <div>
-                  <span style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "#888", fontWeight: "600", letterSpacing: "0.5px" }}>
+                  <span style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "var(--color-forest)", fontWeight: "600", letterSpacing: "0.5px" }}>
                     {product.subCategory || product.category}
                   </span>
                   <h3 style={{ margin: "8px 0", fontSize: "1.2rem", color: "var(--color-forest)" }}>
                     {product.name}
                   </h3>
-                  <p style={{ color: "#555", fontSize: "0.95rem", margin: "0 0 15px 0", lineHeight: "1.4" }}>
+                  <p style={{ color: "var(--color-text)", opacity: 0.85, fontSize: "0.95rem", margin: "0 0 15px 0", lineHeight: "1.4" }}>
                     {product.description}
                   </p>
                 </div>
@@ -187,12 +206,13 @@ function ShopContent() {
                   </span>
                   <Link href={`/shop/${product._id}`} style={{ 
                     background: "var(--color-forest)", 
-                    color: "white", 
+                    color: "var(--color-bg)", 
                     padding: "8px 16px", 
                     borderRadius: "8px", 
                     textDecoration: "none", 
                     fontSize: "0.9rem", 
-                    fontWeight: "600" 
+                    fontWeight: "600",
+                    border: "1px solid var(--color-forest)"
                   }}>
                     View Details
                   </Link>

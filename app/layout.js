@@ -1,6 +1,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { ClerkProvider, SignInButton, UserButton } from "@clerk/nextjs";
+import ThemeToggle from "@/components/ThemeToggle";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata = {
@@ -30,7 +31,8 @@ export default async function RootLayout({ children }) {
             background: "var(--color-bg)",
             position: "sticky",
             top: 0,
-            zIndex: 100
+            zIndex: 100,
+            transition: "background-color 0.3s ease, border-color 0.3s ease"
           }}>
             {/* 1. Left Section: Logo */}
             <div style={{ justifySelf: "start" }}>
@@ -51,8 +53,8 @@ export default async function RootLayout({ children }) {
 
               {/* My Patterns Feature: Only shows up when user is logged in */}
               {userId && (
-                <Link href="/profile" style={{ color: "var(--color-forest)", textDecoration: "none" }}>
-                  My Patterns
+                <Link href="/purchases" style={{ color: "var(--color-forest)", textDecoration: "none" }}>
+                  My Purchases
                 </Link>
               )}
             </nav>
@@ -61,7 +63,15 @@ export default async function RootLayout({ children }) {
             <div style={{ display: "flex", alignItems: "center", justifySelf: "end" }}>
               {!userId ? (
                 <SignInButton mode="modal">
-                  <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 18px", borderRadius: "8px", fontWeight: "600", cursor: "pointer" }}>
+                  <button style={{
+                    background: "var(--color-forest)",
+                    color: "var(--color-bg)",
+                    border: "1px solid var(--color-forest)",
+                    padding: "8px 18px",
+                    borderRadius: "8px",
+                    fontWeight: "600",
+                    cursor: "pointer"
+                  }}>
                     Sign In
                   </button>
                 </SignInButton>
@@ -74,6 +84,7 @@ export default async function RootLayout({ children }) {
           <div style={{ flex: 1, background: "var(--color-bg)" }}>
             {children}
           </div>
+          <ThemeToggle />
         </body>
       </html>
     </ClerkProvider>

@@ -19,6 +19,7 @@ export default function CheckoutPage() {
     postalCode: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (isBuyNow) {
@@ -45,18 +46,46 @@ export default function CheckoutPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (cart.length === 0) return;
+    if (cart.length === 0 || !user) return;
 
-    // Clear the correct storage item depending on the checkout mode
-    if (isBuyNow) {
-      localStorage.removeItem("directCheckoutItem");
-    } else {
-      localStorage.removeItem("cart");
+    const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    setIsSubmitting(true);
+
+    try {
+      // 1. Send order data to MongoDB via API route
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          items: cart,
+          totalAmount: totalPrice,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // 2. Clear the correct storage item depending on the checkout mode
+        if (isBuyNow) {
+          localStorage.removeItem("directCheckoutItem");
+        } else {
+          localStorage.removeItem("cart");
+        }
+
+        // 3. Trigger success view
+        setIsSubmitted(true);
+      } else {
+        alert("Failed to place order: " + (data.error || "Unknown error"));
+      }
+    } catch (err) {
+      console.error("Checkout submission error:", err);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-
-    setIsSubmitted(true);
   };
 
   const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -101,12 +130,20 @@ export default function CheckoutPage() {
           <p style={{ color: "var(--color-forest)", opacity: 0.85, fontSize: "1.1rem", lineHeight: "1.6", marginBottom: "30px" }}>
             Thank you, <strong>{formData.name}</strong>! We are packing your cozy creations with love and care. A confirmation email has been sent to <strong>{formData.email}</strong>.
           </p>
-          <Link 
-            href="/shop" 
-            style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 28px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "1rem" }}
-          >
-            Continue Shopping 🛍️
-          </Link>
+          <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap" }}>
+            <Link 
+              href="/purchases" 
+              style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "1rem" }}
+            >
+              View My Purchases 📦
+            </Link>
+            <Link 
+              href="/shop" 
+              style={{ background: "transparent", color: "var(--color-forest)", border: "2px solid var(--color-forest)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "1rem" }}
+            >
+              Continue Shopping 🛍️
+            </Link>
+          </div>
         </div>
       </main>
     );
@@ -210,9 +247,10 @@ export default function CheckoutPage() {
 
           <button 
             type="submit" 
-            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", marginTop: "10px", cursor: "pointer" }}
+            disabled={isSubmitting}
+            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", marginTop: "10px", cursor: isSubmitting ? "not-allowed" : "pointer", opacity: isSubmitting ? 0.7 : 1 }}
           >
-            Place Order (${totalPrice.toFixed(2)}) 🧶
+            {isSubmitting ? "Processing Order... 🧶" : `Place Order (₮${totalPrice.toLocaleString()}) 🛍️`}
           </button>
         </form>
 
@@ -227,14 +265,14 @@ export default function CheckoutPage() {
                   <h4 style={{ color: "var(--color-forest)", fontSize: "1rem", margin: 0 }}>{item.name}</h4>
                   <span style={{ fontSize: "0.85rem", color: "var(--color-forest)", opacity: 0.8 }}>Qty: {item.quantity}</span>
                 </div>
-                <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>${(item.price * item.quantity).toFixed(2)}</span>
+                <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>₮{(item.price * item.quantity).toLocaleString()}</span>
               </div>
             ))}
           </div>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "2px solid var(--color-forest)", paddingTop: "15px", fontWeight: "bold", fontSize: "1.2rem", color: "var(--color-forest)" }}>
             <span>Total:</span>
-            <span>${totalPrice.toFixed(2)}</span>
+            <span>₮{totalPrice.toLocaleString()}</span>
           </div>
         </div>
 

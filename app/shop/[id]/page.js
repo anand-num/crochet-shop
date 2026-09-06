@@ -58,7 +58,7 @@ export default function ProductDetailPage() {
     setTimeout(() => setAdded(false), 2500);
   };
 
-const buyNow = () => {
+  const buyNow = () => {
     if (!product) return;
 
     const qtyToAdd = product.category === "pattern" ? 1 : quantity;
@@ -70,9 +70,10 @@ const buyNow = () => {
     // 2. Send the user to checkout with a flag indicating a direct buy-now flow
     router.push("/checkout?mode=buynow");
   };
+
   if (loading) {
     return (
-      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
+      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
         <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Loading cozy details... 🧶</p>
       </main>
     );
@@ -80,7 +81,7 @@ const buyNow = () => {
 
   if (!product) {
     return (
-      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
+      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
         <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Product Not Found</h1>
         <Link href="/shop" style={{ color: "var(--color-forest)", fontWeight: "600", textDecoration: "underline" }}>
           Back to Shop 🛍️
@@ -92,7 +93,7 @@ const buyNow = () => {
   const isPattern = product.category === "pattern";
 
   return (
-    <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit" }}>
+    <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit", background: "var(--color-bg)", color: "var(--color-text)", transition: "background-color 0.3s ease, color 0.3s ease" }}>
       <Link 
         href="/shop" 
         style={{ color: "var(--color-forest)", textDecoration: "none", fontWeight: "600", display: "inline-block", marginBottom: "25px" }}
@@ -101,33 +102,35 @@ const buyNow = () => {
       </Link>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start", flexWrap: "wrap" }}>
-        <img 
-          src={product.imageUrl} 
-          alt={product.name} 
-          style={{ width: "100%", height: "350px", objectFit: "cover", borderRadius: "12px", border: "2px solid var(--color-forest)" }} 
-        />
+        <div style={{ width: "100%", height: "350px", background: "rgba(0,0,0,0.05)", borderRadius: "12px", overflow: "hidden", border: "2px solid var(--color-forest)" }}>
+          <img 
+            src={product.imageUrl} 
+            alt={product.name} 
+            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+          />
+        </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-          <span style={{ fontSize: "0.75rem", background: "var(--color-cream)", color: "var(--color-forest)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase", width: "fit-content" }}>
+          <span style={{ fontSize: "0.75rem", background: "var(--color-sage)", color: "var(--color-text)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase", width: "fit-content" }}>
             {isPattern ? "Digital Pattern 📄" : "Physical Item 🧶"}
           </span>
 
           <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", margin: 0 }}>{product.name}</h1>
-          <p style={{ color: "var(--color-forest)", fontSize: "1.4rem", fontWeight: "700" }}>${product.price.toFixed(2)}</p>
-          <p style={{ color: "var(--color-forest)", opacity: 0.85, lineHeight: "1.6" }}>{product.description}</p>
+          <p style={{ color: "var(--color-forest)", fontSize: "1.4rem", fontWeight: "700" }}>₮{product.price.toLocaleString()}</p>
+          <p style={{ color: "var(--color-text)", opacity: 0.85, lineHeight: "1.6" }}>{product.description}</p>
 
           {/* Conditional Quantity Selector: ONLY show if it's a physical item */}
           {!isPattern ? (
             <div style={{ display: "flex", alignItems: "center", gap: "15px", marginTop: "10px" }}>
               <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>Quantity:</span>
-              <div style={{ display: "flex", alignItems: "center", border: "2px solid var(--color-forest)", borderRadius: "8px", overflow: "hidden", background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", border: "2px solid var(--color-forest)", borderRadius: "8px", overflow: "hidden", background: "var(--color-bg)" }}>
                 <button 
                   onClick={() => handleQuantityChange(-1)}
                   style={{ background: "transparent", border: "none", padding: "8px 16px", color: "var(--color-forest)", fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer" }}
                 >
                   -
                 </button>
-                <span style={{ padding: "0 14px", color: "var(--color-forest)", fontWeight: "700", fontSize: "1.1rem" }}>{quantity}</span>
+                <span style={{ padding: "0 14px", color: "var(--color-text)", fontWeight: "700", fontSize: "1.1rem" }}>{quantity}</span>
                 <button 
                   onClick={() => handleQuantityChange(1)}
                   style={{ background: "transparent", border: "none", padding: "8px 16px", color: "var(--color-forest)", fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer" }}
@@ -164,7 +167,7 @@ const buyNow = () => {
             <button 
               onClick={buyNow}
               style={{ 
-                background: "var(--color-cream)", 
+                background: "transparent", 
                 color: "var(--color-forest)", 
                 border: "2px solid var(--color-forest)", 
                 padding: "14px", 
