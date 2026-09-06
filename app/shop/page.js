@@ -4,23 +4,20 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-// 1. Inner component that safely reads useSearchParams
 function ShopContent() {
   const searchParams = useSearchParams();
-  const mainCategoryFilter = searchParams.get("category"); // "item" or "pattern"
+  const mainCategoryFilter = searchParams.get("category");
 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
 
-  // Fetch products from API backend with strict array extraction
   useEffect(() => {
     async function fetchProducts() {
       try {
         const res = await fetch("/api/products");
         const data = await res.json();
-        // Safely extract the array regardless of how the API response is formatted
         if (Array.isArray(data)) {
           setProducts(data);
         } else if (data.products && Array.isArray(data.products)) {
@@ -41,23 +38,19 @@ function ShopContent() {
     fetchProducts();
   }, []);
 
-  // Reset dropdown filter whenever the navbar category changes
   useEffect(() => {
     setSelectedCategory("all");
   }, [mainCategoryFilter]);
 
-  // 1. Ensure products is an array before filtering to prevent any crashes
   const safeProducts = Array.isArray(products) ? products : [];
 
   const filteredProducts = safeProducts.filter((p) => {
-    // Check main navbar category (?category=item or ?category=pattern)
     if (mainCategoryFilter) {
       if (!p.category || p.category.toLowerCase() !== mainCategoryFilter.toLowerCase()) {
         return false;
       }
     }
     
-    // Check sub-category dropdown filter
     if (selectedCategory !== "all") {
       const matchCategory = p.category?.toLowerCase() === selectedCategory.toLowerCase();
       const matchSubCategory = p.subCategory?.toLowerCase() === selectedCategory.toLowerCase();
@@ -68,7 +61,6 @@ function ShopContent() {
     return true;
   });
 
-  // 2. Sort products
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === "price-asc") return a.price - b.price;
     if (sortBy === "price-desc") return b.price - a.price;
@@ -78,22 +70,20 @@ function ShopContent() {
   });
 
   if (loading) {
-    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Loading cozy items... 🧶</div>;
+    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Дулаан бараануудыг ачаалж байна... 🧶</div>;
   }
 
   return (
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-      {/* Dynamic Title based on Navbar Click */}
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <h1 style={{ fontSize: "2.5rem", color: "var(--color-forest)", marginBottom: "10px" }}>
-          {mainCategoryFilter === "item" ? "Crochet Items 🧸" : mainCategoryFilter === "pattern" ? "Crochet Patterns 📄" : "The Crochet Shop 🧶"}
+          {mainCategoryFilter === "item" ? "Сүлжмэл бүтээгдэхүүнүүд 🧸" : mainCategoryFilter === "pattern" ? "Цахим загварууд 📄" : "Крошет дэлгүүр 🧶"}
         </h1>
         <p style={{ color: "var(--color-text)", opacity: 0.8, fontSize: "1.1rem" }}>
-          Explore our handmade collection of cozy creations and patterns.
+          Хайр шингээж урласан сүлжмэл бүтээгдэхүүн болон загваруудаас сонгоорой.
         </p>
       </div>
 
-      {/* Filter and Sort Controls Bar */}
       <div style={{ 
         display: "flex", 
         justifyContent: "space-between", 
@@ -108,9 +98,8 @@ function ShopContent() {
         boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
         transition: "background-color 0.3s ease, border-color 0.3s ease"
       }}>
-        {/* Sub-category Dropdown Filter */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Filter by:</label>
+          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Шүүх:</label>
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
@@ -124,20 +113,19 @@ function ShopContent() {
               color: "var(--color-text)" 
             }}
           >
-            <option value="all" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>All Sub-categories</option>
-            <option value="keychain" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Keychain</option>
-            <option value="plushie" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Plushie</option>
-            <option value="hat" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Hat</option>
-            <option value="earwarmer" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Earwarmer</option>
-            <option value="scarf" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Scarf</option>
-            <option value="purse & pouch" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Purse & Pouch</option>
-            <option value="flowers" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Flowers</option>
+            <option value="all" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Бүх дэд ангилал</option>
+            <option value="keychain" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Түлхүүрийн оосор</option>
+            <option value="plushie" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Тоглоом</option>
+            <option value="hat" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Малгай</option>
+            <option value="earwarmer" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Чихэвч (Чихэвчтэй ороолт)</option>
+            <option value="scarf" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Ороолт</option>
+            <option value="purse & pouch" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Цүнх болон түрийвч</option>
+            <option value="flowers" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Цэцэг</option>
           </select>
         </div>
 
-        {/* Sorting Dropdown */}
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Sort by:</label>
+          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Эрэмбэлэх:</label>
           <select 
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
@@ -151,18 +139,17 @@ function ShopContent() {
               color: "var(--color-text)" 
             }}
           >
-            <option value="newest" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Newest First</option>
-            <option value="price-asc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Price: Low to High</option>
-            <option value="price-desc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Price: High to Low</option>
-            <option value="name" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Name: A-Z</option>
+            <option value="newest" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Хамгийн шинэ нь</option>
+            <option value="price-asc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Үнэ: Хямдаас өндөр рүү</option>
+            <option value="price-desc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Үнэн: Өндөрөөс хямд руу</option>
+            <option value="name" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Нэрээр: А-Я</option>
           </select>
         </div>
       </div>
 
-      {/* Products Grid */}
       {sortedProducts.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px", color: "var(--color-text)", opacity: 0.7, fontSize: "1.1rem" }}>
-          No crochet items found matching your filters. Check back soon! 🧶
+          Таны шүүлтүүрт тохирох бүтээгдэхүүн олдсонгүй. Тун удахгүй нэмэгдэх болно! 🧶
         </div>
       ) : (
         <div style={{ 
@@ -202,7 +189,7 @@ function ShopContent() {
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "15px" }}>
                   <span style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-forest)" }}>
-                    ${product.price.toFixed(2)}
+                    ₮{product.price.toLocaleString()}
                   </span>
                   <Link href={`/shop/${product._id}`} style={{ 
                     background: "var(--color-forest)", 
@@ -214,7 +201,7 @@ function ShopContent() {
                     fontWeight: "600",
                     border: "1px solid var(--color-forest)"
                   }}>
-                    View Details
+                    Дэлгэрэнгүй
                   </Link>
                 </div>
               </div>
@@ -226,10 +213,9 @@ function ShopContent() {
   );
 }
 
-// 2. Default export wraps the shop content inside a Suspense boundary
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Loading shop... 🧶</div>}>
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Дэлгүүрийг ачаалж байна... 🧶</div>}>
       <ShopContent />
     </Suspense>
   );

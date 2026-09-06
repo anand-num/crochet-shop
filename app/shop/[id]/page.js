@@ -38,7 +38,6 @@ export default function ProductDetailPage() {
   const addToCart = () => {
     if (!product) return;
 
-    // Patterns are always quantity = 1
     const qtyToAdd = product.category === "pattern" ? 1 : quantity;
 
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -48,7 +47,6 @@ export default function ProductDetailPage() {
       if (product.category !== "pattern") {
         existingCart[existingIndex].quantity += qtyToAdd;
       }
-      // If it's a pattern and already in cart, keep it at 1
     } else {
       existingCart.push({ ...product, quantity: qtyToAdd });
     }
@@ -63,18 +61,16 @@ export default function ProductDetailPage() {
 
     const qtyToAdd = product.category === "pattern" ? 1 : quantity;
 
-    // 1. Isolate THIS specific product in a separate storage key
     const directCheckoutItem = [{ ...product, quantity: qtyToAdd }];
     localStorage.setItem("directCheckoutItem", JSON.stringify(directCheckoutItem));
 
-    // 2. Send the user to checkout with a flag indicating a direct buy-now flow
     router.push("/checkout?mode=buynow");
   };
 
   if (loading) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
-        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Loading cozy details... 🧶</p>
+        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Дулаан дэлгэрэнгүйг ачаалж байна... 🧶</p>
       </main>
     );
   }
@@ -82,9 +78,9 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Product Not Found</h1>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бүтээгдэхүүн олдсонгүй</h1>
         <Link href="/shop" style={{ color: "var(--color-forest)", fontWeight: "600", textDecoration: "underline" }}>
-          Back to Shop 🛍️
+          Дэлгүүр рүү буцах 🛍️
         </Link>
       </main>
     );
@@ -98,7 +94,7 @@ export default function ProductDetailPage() {
         href="/shop" 
         style={{ color: "var(--color-forest)", textDecoration: "none", fontWeight: "600", display: "inline-block", marginBottom: "25px" }}
       >
-        ← Back to Shop
+        ← Дэлгүүр рүү буцах
       </Link>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start", flexWrap: "wrap" }}>
@@ -112,17 +108,16 @@ export default function ProductDetailPage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
           <span style={{ fontSize: "0.75rem", background: "var(--color-sage)", color: "var(--color-text)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase", width: "fit-content" }}>
-            {isPattern ? "Digital Pattern 📄" : "Physical Item 🧶"}
+            {isPattern ? "Цахим загвар 📄" : "Бэлэн бүтээгдэхүүн 🧶"}
           </span>
 
           <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", margin: 0 }}>{product.name}</h1>
           <p style={{ color: "var(--color-forest)", fontSize: "1.4rem", fontWeight: "700" }}>₮{product.price.toLocaleString()}</p>
           <p style={{ color: "var(--color-text)", opacity: 0.85, lineHeight: "1.6" }}>{product.description}</p>
 
-          {/* Conditional Quantity Selector: ONLY show if it's a physical item */}
           {!isPattern ? (
             <div style={{ display: "flex", alignItems: "center", gap: "15px", marginTop: "10px" }}>
-              <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>Quantity:</span>
+              <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>Тоо ширхэг:</span>
               <div style={{ display: "flex", alignItems: "center", border: "2px solid var(--color-forest)", borderRadius: "8px", overflow: "hidden", background: "var(--color-bg)" }}>
                 <button 
                   onClick={() => handleQuantityChange(-1)}
@@ -141,11 +136,10 @@ export default function ProductDetailPage() {
             </div>
           ) : (
             <div style={{ background: "var(--color-cream)", padding: "10px 14px", borderRadius: "8px", border: "1px dashed var(--color-forest)", fontSize: "0.9rem", color: "var(--color-forest)" }}>
-              📄 Instant Digital Download (PDF sent to your profile inventory upon purchase)
+              📄 Шууд татаж авах боломжтой цахим загвар (Худалдаж авсны дараа таны захиалгын хэсэгт PDF илгээгдэнэ)
             </div>
           )}
 
-          {/* Action Buttons Container */}
           <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
             <button 
               onClick={addToCart}
@@ -158,10 +152,10 @@ export default function ProductDetailPage() {
                 fontWeight: "700", 
                 fontSize: "1.1rem", 
                 cursor: "pointer", 
-                transition: "background 0.2s"
+                transition: "background 0.2s" 
               }}
             >
-              {added ? "Added to Cart! ✅" : isPattern ? "Add Pattern to Cart 🛒" : `Add to Cart (${quantity}) 🛒`}
+              {added ? "Сагсанд нэмэгдлээ! ✅" : isPattern ? "Загвар сагслах 🛒" : `Сагсанд нэмэх (${quantity}) 🛒`}
             </button>
 
             <button 
@@ -175,10 +169,10 @@ export default function ProductDetailPage() {
                 fontWeight: "700", 
                 fontSize: "1.1rem", 
                 cursor: "pointer",
-                transition: "opacity 0.2s"
+                transition: "opacity 0.2s" 
               }}
             >
-              {isPattern ? "Buy Pattern Now ⚡" : "Buy It Now ⚡"}
+              {isPattern ? "Загварыг шууд худалдаж авах ⚡" : "Шууд худалдаж авах ⚡"}
             </button>
           </div>
         </div>

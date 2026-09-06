@@ -30,7 +30,7 @@ export default function PurchasesPage() {
   if (!isLoaded || loading) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", color: "var(--color-forest)" }}>
-        <h2>Loading your cozy purchases... 🧶</h2>
+        <h2>Таны захиалгуудыг ачаалж байна... 🧶</h2>
       </main>
     );
   }
@@ -38,8 +38,8 @@ export default function PurchasesPage() {
   if (!user) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center" }}>
-        <h2 style={{ color: "var(--color-forest)", marginBottom: "15px" }}>Please Sign In</h2>
-        <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "20px" }}>You need to be signed in to view your purchases.</p>
+        <h2 style={{ color: "var(--color-forest)", marginBottom: "15px" }}>Нэвтэрнэ үү</h2>
+        <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "20px" }}>Та захиалгуудаа харахын тулд нэвтэрсэн байх шаардлагатай.</p>
       </main>
     );
   }
@@ -47,15 +47,15 @@ export default function PurchasesPage() {
   if (orders.length === 0) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>No Purchases Yet 🧵</h1>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Одоогоор захиалга байхгүй байна 🧵</h1>
         <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "30px", fontSize: "1.1rem" }}>
-          You haven't bought any items or patterns yet!
+          Та одоогоор ямар нэгэн бүтээгдэхүүн эсвэл загвар худалдаж аваагүй байна!
         </p>
         <Link 
           href="/shop" 
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "600" }}
         >
-          Explore the Shop 🛍️
+          Дэлгүүр хэсэх 🛍️
         </Link>
       </main>
     );
@@ -64,7 +64,7 @@ export default function PurchasesPage() {
   return (
     <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit" }}>
       <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
-        My Purchases 📦
+        Миний захиалгууд 📦
       </h1>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "25px" }}>
@@ -79,17 +79,15 @@ export default function PurchasesPage() {
               boxShadow: "0 4px 10px rgba(56, 102, 65, 0.05)"
             }}
           >
-            {/* Order Header info */}
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "15px", borderBottom: "1px solid rgba(56, 102, 65, 0.2)", paddingBottom: "10px", flexWrap: "wrap", gap: "10px" }}>
               <span style={{ fontSize: "0.9rem", color: "var(--color-forest)", opacity: 0.8 }}>
-                Order Date: {new Date(order.createdAt).toLocaleDateString()}
+                Захиалсан огноо: {new Date(order.createdAt).toLocaleDateString()}
               </span>
               <span style={{ fontWeight: "700", color: "var(--color-forest)" }}>
-                Total: ${order.totalAmount.toFixed(2)}
+                Нийт дүн: ₮{order.totalAmount.toLocaleString()}
               </span>
             </div>
 
-            {/* Items inside the order */}
             <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
               {order.items.map((item, index) => (
                 <div 
@@ -114,23 +112,21 @@ export default function PurchasesPage() {
                     <div>
                       <h4 style={{ color: "var(--color-forest)", fontSize: "1.1rem", marginBottom: "4px" }}>{item.name}</h4>
                       <p style={{ fontSize: "0.9rem", color: "var(--color-forest)", opacity: 0.8, marginBottom: "4px" }}>
-                        Qty: {item.quantity} | Price: ${item.price}
+                        Тоо ширхэг: {item.quantity} | Үнэ: ₮{item.price.toLocaleString()}
                       </p>
                       
-                      {/* Badge & Status handling */}
                       {item.category === "pattern" ? (
                         <span style={{ fontSize: "0.75rem", background: "var(--color-cream)", color: "var(--color-forest)", padding: "2px 6px", borderRadius: "4px", fontWeight: "600", border: "1px solid var(--color-forest)" }}>
-                          Digital Pattern 📄
+                          Цахим загвар 📄
                         </span>
                       ) : (
                         <span style={{ fontSize: "0.85rem", color: "var(--color-forest)", fontWeight: "700" }}>
-                          Status: {order.status || "Making 🧶"}
+                          Төлөв: {order.status || "Урлаж байна 🧶"}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Actions: Download PDF if pattern, otherwise subtotal */}
                   {item.category === "pattern" ? (
                     <a 
                       href={item.pdfUrl} 
@@ -145,11 +141,11 @@ export default function PurchasesPage() {
                         fontSize: "0.9rem" 
                       }}
                     >
-                      Download PDF 📥
+                      PDF татаж авах 📥
                     </a>
                   ) : (
                     <span style={{ fontWeight: "700", color: "var(--color-forest)" }}>
-                      Subtotal: ${(item.price * item.quantity).toFixed(2)}
+                      Дэд дүн: ₮{(item.price * item.quantity).toLocaleString()}
                     </span>
                   )}
                 </div>

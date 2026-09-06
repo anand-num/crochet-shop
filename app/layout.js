@@ -5,8 +5,8 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata = {
-  title: "Crochet Corner 🧶",
-  description: "Handmade crochet plushies, bags, and patterns",
+  title: "Enoki.vibes 🧶",
+  description: "Гараар урласан сүлжмэл тоглоом, цүнх болон загварууд",
 };
 
 export default async function RootLayout({ children }) {
@@ -14,7 +14,7 @@ export default async function RootLayout({ children }) {
 
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="mn">
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -38,23 +38,23 @@ export default async function RootLayout({ children }) {
             <div style={{ justifySelf: "start" }}>
               <Link href="/" style={{ textDecoration: "none" }}>
                 <h2 style={{ margin: 0, fontSize: "1.5rem", color: "var(--color-forest)", fontWeight: "700" }}>
-                  🧶 Crochet Corner
+                  Enoki.vibes
                 </h2>
               </Link>
             </div>
 
             {/* 2. Middle Section: Navigation Links (Dead Center) */}
             <nav style={{ display: "flex", alignItems: "center", gap: "25px", fontSize: "1.05rem", fontWeight: "600", justifySelf: "center" }}>
-              <Link href="/" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Home</Link>
-              <Link href="/shop" style={{ color: "var(--color-forest)", textDecoration: "none" }}>All Shop</Link>
-              <Link href="/shop?category=item" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Items</Link>
-              <Link href="/shop?category=pattern" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Patterns</Link>
-              <Link href="/cart" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Cart</Link>
+              <Link href="/" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Нүүр</Link>
+              <Link href="/shop" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Бүх бараа</Link>
+              <Link href="/shop?category=item" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Бүтээгдэхүүн</Link>
+              <Link href="/shop?category=pattern" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Загварууд</Link>
+              <Link href="/cart" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Сагс</Link>
 
-              {/* My Patterns Feature: Only shows up when user is logged in */}
+              {/* My Purchases Feature: Only shows up when user is logged in */}
               {userId && (
                 <Link href="/purchases" style={{ color: "var(--color-forest)", textDecoration: "none" }}>
-                  My Purchases
+                  Миний захиалгууд
                 </Link>
               )}
             </nav>
@@ -72,7 +72,7 @@ export default async function RootLayout({ children }) {
                     fontWeight: "600",
                     cursor: "pointer"
                   }}>
-                    Sign In
+                    Нэвтрэх
                   </button>
                 </SignInButton>
               ) : (
