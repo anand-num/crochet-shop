@@ -50,7 +50,7 @@ export default function ThemeToggle() {
         boxShadow: "0 4px 15px rgba(0, 0, 0, 0.2)",
       }}
     >
-      {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+      {darkMode ? "☀️" : "🌙"}
     </button>
   );
 }

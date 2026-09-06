@@ -166,7 +166,7 @@ export default function CheckoutPage() {
         
         <form 
           onSubmit={handleSubmit} 
-          style={{ background: "var(--color-bg)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "30px", boxShadow: "0 4px 12px rgba(56, 102, 65, 0.05)", display: "flex", flexDirection: "column", gap: "20px" }}
+          style={{ flex: "1 1 500px", background: "var(--color-bg)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "30px", boxShadow: "0 4px 12px rgba(56, 102, 65, 0.05)", display: "flex", flexDirection: "column", gap: "20px" }}
         >
           <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "5px" }}>Хүргэлтийн мэдээлэл 📦</h2>
 
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
           </button>
         </form>
 
-        <div style={{ background: "var(--color-cream)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "25px" }}>
+        <div style={{flex: "1 1 350px", background: "var(--color-cream)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "25px" }}>
           <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "20px" }}>Захиалгын тойм 📋</h2>
           
           <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginBottom: "20px", maxHeight: "300px", overflowY: "auto" }}>

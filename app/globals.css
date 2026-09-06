@@ -1,5 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
+:root {
+  --font-cute: 'Nunito', sans-serif;
+}
+/* Force every single element and text on the page to use the font */
+*, body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p, span, a {
+  font-family: var(--font-cute) !important;
+}
 :root {
   --color-leaf: #A7C957;
   --color-forest: #386641;
@@ -62,4 +69,29 @@ button {
 
 button:hover {
   opacity: 0.9;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.desktop-nav {
+  display: flex;
+}
+.mobile-menu-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-nav {
+    display: none !important;
+  }
+  .mobile-menu-btn {
+    display: flex !important;
+  }
 }
