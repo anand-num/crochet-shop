@@ -3,6 +3,17 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
+// Helper function to map English DB status to Mongolian text
+const getStatusText = (status) => {
+  switch (status?.toLowerCase()) {
+    case "shipped":
+      return "Хүргэлтэд гарсан 🚚";
+    case "making":
+    default:
+      return "Хийгдэж буй 🧶";
+  }
+};
+
 export default function PurchasesPage() {
   const { user, isLoaded } = useUser();
   const [orders, setOrders] = useState([]);
@@ -121,7 +132,7 @@ export default function PurchasesPage() {
                         </span>
                       ) : (
                         <span style={{ fontSize: "0.85rem", color: "var(--color-forest)", fontWeight: "700" }}>
-                          Төлөв: {order.status || "Урлаж байна 🧶"}
+                          Төлөв: {getStatusText(order.status)}
                         </span>
                       )}
                     </div>
