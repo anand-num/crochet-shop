@@ -27,7 +27,7 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please specify a sub-category."],
       // Matches your dropdown values exactly
-      enum: ["keychain", "plushie", "hat", "earwarmer", "scarf", "purse & pouch", "flowes"],
+      enum: ["keychain", "plushie", "hat", "earwarmer", "scarf", "purse & pouch", "flowers"],
     },
     patternPdfUrl: {
       type: String, // Optional, used if it's a digital pattern
