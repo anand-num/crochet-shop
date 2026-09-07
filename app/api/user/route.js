@@ -11,8 +11,7 @@ export async function GET(request) {
     }
 
     await dbConnect();
-
-    // Find user in MongoDB, or create them if it's their first time signing in
+    
     let dbUser = await User.findOne({ clerkId: clerkUser.id });
 
     if (!dbUser) {

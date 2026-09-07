@@ -7,10 +7,10 @@ import Link from "next/link";
 const getStatusText = (status) => {
   switch (status?.toLowerCase()) {
     case "shipped":
-      return "Хүргэлтэд гарсан 🚚";
+      return "Хүргэлтэд гарсан";
     case "making":
     default:
-      return "Хийгдэж буй 🧶";
+      return "Хийгдэж буй";
   }
 };
 
@@ -41,7 +41,7 @@ export default function PurchasesPage() {
   if (!isLoaded || loading) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", color: "var(--color-forest)" }}>
-        <h2>Таны захиалгуудыг ачаалж байна... 🧶</h2>
+        <h2>Таны захиалгуудыг ачаалж байна...</h2>
       </main>
     );
   }
@@ -58,7 +58,7 @@ export default function PurchasesPage() {
   if (orders.length === 0) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Одоогоор захиалга байхгүй байна 🧵</h1>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Одоогоор захиалга байхгүй байна.</h1>
         <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "30px", fontSize: "1.1rem" }}>
           Та одоогоор ямар нэгэн бүтээгдэхүүн эсвэл загвар худалдаж аваагүй байна!
         </p>
@@ -66,7 +66,7 @@ export default function PurchasesPage() {
           href="/shop" 
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "600" }}
         >
-          Дэлгүүр хэсэх 🛍️
+          Дэлгүүр хэсэх
         </Link>
       </main>
     );
@@ -75,7 +75,7 @@ export default function PurchasesPage() {
   return (
     <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit" }}>
       <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
-        Миний захиалгууд 📦
+        Миний захиалгууд
       </h1>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "25px" }}>
@@ -128,7 +128,7 @@ export default function PurchasesPage() {
                       
                       {item.category === "pattern" ? (
                         <span style={{ fontSize: "0.75rem", background: "var(--color-cream)", color: "var(--color-forest)", padding: "2px 6px", borderRadius: "4px", fontWeight: "600", border: "1px solid var(--color-forest)" }}>
-                          Цахим загвар 📄
+                          Цахим загвар 
                         </span>
                       ) : (
                         <span style={{ fontSize: "0.85rem", color: "var(--color-forest)", fontWeight: "700" }}>
@@ -152,7 +152,7 @@ export default function PurchasesPage() {
                         fontSize: "0.9rem" 
                       }}
                     >
-                      PDF татаж авах 📥
+                      PDF татаж авах 
                     </a>
                   ) : (
                     <span style={{ fontWeight: "700", color: "var(--color-forest)" }}>

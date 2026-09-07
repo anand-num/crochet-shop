@@ -1,20 +1,20 @@
 import mongoose from "mongoose";
 
 const OrderSchema = new mongoose.Schema({
-  userId: { type: String, required: true }, // Clerk User ID
+  userId: { type: String, required: true }, 
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       name: String,
       price: Number,
       quantity: Number,
-      category: String, // "item" or "pattern"
+      category: String, 
       imageUrl: String,
-      pdfUrl: String,   // Present if it's a pattern
+      pdfUrl: String,   
     }
   ],
   totalAmount: { type: Number, required: true },
-  status: { type: String, default: "Making 🧶" }, // "Making 🧶", "Shipped 🚚"
+  status: { type: String, default: "Making" }, 
   createdAt: { type: Date, default: Date.now }
 });
 

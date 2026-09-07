@@ -70,7 +70,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
-        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Дулаан дэлгэрэнгүйг ачаалж байна... 🧶</p>
+        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Ачаалж байна...</p>
       </main>
     );
   }
@@ -80,7 +80,7 @@ export default function ProductDetailPage() {
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
         <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бүтээгдэхүүн олдсонгүй</h1>
         <Link href="/shop" style={{ color: "var(--color-forest)", fontWeight: "600", textDecoration: "underline" }}>
-          Дэлгүүр рүү буцах 🛍️
+          Дэлгүүр рүү буцах
         </Link>
       </main>
     );
@@ -108,7 +108,7 @@ export default function ProductDetailPage() {
 
         <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
           <span style={{ fontSize: "0.75rem", background: "var(--color-sage)", color: "var(--color-text)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase", width: "fit-content" }}>
-            {isPattern ? "Цахим загвар 📄" : "Бэлэн бүтээгдэхүүн 🧶"}
+            {isPattern ? "Цахим загвар" : "Бэлэн бүтээгдэхүүн"}
           </span>
 
           <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", margin: 0 }}>{product.name}</h1>
@@ -136,7 +136,7 @@ export default function ProductDetailPage() {
             </div>
           ) : (
             <div style={{ background: "var(--color-cream)", padding: "10px 14px", borderRadius: "8px", border: "1px dashed var(--color-forest)", fontSize: "0.9rem", color: "var(--color-forest)" }}>
-              📄 Шууд татаж авах боломжтой цахим загвар (Худалдаж авсны дараа таны захиалгын хэсэгт PDF илгээгдэнэ)
+              Шууд татаж авах боломжтой цахим загвар (Худалдаж авсны дараа таны захиалгын хэсэгт PDF илгээгдэнэ)
             </div>
           )}
 
@@ -155,7 +155,7 @@ export default function ProductDetailPage() {
                 transition: "background 0.2s" 
               }}
             >
-              {added ? "Сагсанд нэмэгдлээ! ✅" : isPattern ? "Загвар сагслах 🛒" : `Сагсанд нэмэх (${quantity}) 🛒`}
+              {added ? "Сагсанд нэмэгдлээ!" : isPattern ? "Загвар сагслах" : `Сагсанд нэмэх (${quantity})`}
             </button>
 
             <button 
@@ -172,7 +172,7 @@ export default function ProductDetailPage() {
                 transition: "opacity 0.2s" 
               }}
             >
-              {isPattern ? "Загварыг шууд худалдаж авах ⚡" : "Шууд худалдаж авах ⚡"}
+              {isPattern ? "Загварыг шууд худалдаж авах " : "Шууд худалдаж авах "}
             </button>
           </div>
         </div>

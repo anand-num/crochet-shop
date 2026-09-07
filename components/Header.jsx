@@ -24,7 +24,7 @@ export default function Header({ userId }) {
       <div>
         <Link href="/" style={{ textDecoration: "none" }}>
           <h2 style={{ margin: 0, fontSize: "1.4rem", color: "var(--color-forest)", fontWeight: "700" }}>
-            Enoki.vibes 🧶
+            Enoki.vibes 
           </h2>
         </Link>
       </div>
@@ -38,7 +38,7 @@ export default function Header({ userId }) {
         <Link href="/cart" style={{ color: "var(--color-forest)", textDecoration: "none" }}>Сагс 🛒</Link>
         {userId && (
           <Link href="/purchases" style={{ color: "var(--color-forest)", textDecoration: "none" }}>
-            Миний захиалгууд 📦
+            Миний захиалгууд 
           </Link>
         )}
       </nav>
@@ -118,7 +118,7 @@ export default function Header({ userId }) {
           >
             {/* Drawer Header */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid var(--color-forest)", paddingBottom: "15px" }}>
-              <h3 style={{ margin: 0, color: "var(--color-forest)" }}>Цэс 🧶</h3>
+              <h3 style={{ margin: 0, color: "var(--color-forest)" }}>Цэс </h3>
               <button 
                 onClick={closeMenu}
                 style={{ background: "transparent", border: "none", fontSize: "1.3rem", color: "var(--color-forest)", cursor: "pointer", fontWeight: "bold" }}
@@ -133,10 +133,10 @@ export default function Header({ userId }) {
               <Link href="/shop" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>Бүх бараа</Link>
               <Link href="/shop?category=item" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>Бүтээгдэхүүн</Link>
               <Link href="/shop?category=pattern" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>Загварууд</Link>
-              <Link href="/cart" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>Сагс 🛒</Link>
+              <Link href="/cart" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>Сагс </Link>
               {userId && (
                 <Link href="/purchases" onClick={closeMenu} style={{ color: "var(--color-forest)", textDecoration: "none" }}>
-                  Миний захиалгууд 📦
+                  Миний захиалгууд 
                 </Link>
               )}
             </nav>

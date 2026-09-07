@@ -23,7 +23,6 @@ const uploadToCloudinary = async (file, folder) => {
   });
 };
 
-// PATCH: Update an existing product
 export async function PATCH(request, context) {
   try {
     await connectDB();
@@ -37,6 +36,7 @@ export async function PATCH(request, context) {
     const description = data.get("description");
     const imageFile = data.get("image");
     const pdfFile = data.get("pdf");
+    const inStock = data.get("inStock") === "true"; 
 
     const existingProduct = await Product.findById(id);
     if (!existingProduct) {
@@ -64,6 +64,7 @@ export async function PATCH(request, context) {
         description,
         imageUrl,
         pdfUrl: category === "pattern" ? pdfUrl : undefined,
+        inStock,
       },
       { new: true }
     );
@@ -75,7 +76,6 @@ export async function PATCH(request, context) {
   }
 }
 
-// DELETE: Remove a product
 export async function DELETE(request, context) {
   try {
     await connectDB();

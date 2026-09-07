@@ -9,7 +9,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// GET: Fetch all products for admin management
 export async function GET() {
   try {
     await connectDB();
@@ -21,7 +20,6 @@ export async function GET() {
   }
 }
 
-// POST: Create a new product
 export async function POST(request) {
   try {
     await connectDB();
@@ -34,6 +32,7 @@ export async function POST(request) {
     const description = data.get("description");
     const imageFile = data.get("image");
     const pdfFile = data.get("pdf");
+    const inStock = data.get("inStock") === "true"; 
 
     let imageUrl = "";
     let pdfUrl = "";
@@ -68,6 +67,7 @@ export async function POST(request) {
       description,
       imageUrl,
       pdfUrl: category === "pattern" ? pdfUrl : undefined,
+      inStock,
     });
 
     return NextResponse.json({ success: true, product: newProduct });

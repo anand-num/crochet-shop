@@ -35,15 +35,15 @@ export default function CartPage() {
   if (cart.length === 0) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Таны сагс хоосон байна 🧶</h1>
+        <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", marginBottom: "15px" }}>Таны сагс хоосон байна.</h1>
         <p style={{ color: "var(--color-forest)", opacity: 0.8, marginBottom: "30px", fontSize: "1.1rem" }}>
-          Та одоогоор сагсандаа ямар нэгэн дулаахан бүтээгдэхүүн нэмээгүй байна!
+          Та одоогоор сагсанд бүтээгдэхүүн нэмээгүй байна!
         </p>
         <Link
           href="/shop"
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "600", fontSize: "1rem" }}
         >
-          Дэлгүүр хэсэх 🛍️
+          Дэлгүүр хэсэх
         </Link>
       </main>
     );
@@ -52,7 +52,7 @@ export default function CartPage() {
   return (
     <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit" }}>
       <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
-        Таны сагс 🛒
+        Таны сагс
       </h1>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "20px", marginBottom: "40px" }}>
@@ -81,9 +81,9 @@ export default function CartPage() {
               <div>
                 <h3 style={{ color: "var(--color-forest)", fontSize: "1.2rem", marginBottom: "5px" }}>{item.name}</h3>
                 {item.category === "pattern" ? (
-                  <span style={{ fontSize: "0.8rem", background: "var(--color-cream)", padding: "2px 6px", borderRadius: "4px", color: "var(--color-forest)", fontWeight: "600", border: "1px solid var(--color-forest)" }}>Цахим загвар 📄</span>
+                  <span style={{ fontSize: "0.8rem", background: "var(--color-cream)", padding: "2px 6px", borderRadius: "4px", color: "var(--color-forest)", fontWeight: "600", border: "1px solid var(--color-forest)" }}>Цахим загвар</span>
                 ) : (
-                  <span style={{ fontSize: "0.8rem", background: "rgba(56, 102, 65, 0.1)", padding: "2px 6px", borderRadius: "4px", color: "var(--color-forest)", fontWeight: "600" }}>Бодит бүтээгдэхүүн 🧶</span>
+                  <span style={{ fontSize: "0.8rem", background: "rgba(56, 102, 65, 0.1)", padding: "2px 6px", borderRadius: "4px", color: "var(--color-forest)", fontWeight: "600" }}>Бодит бүтээгдэхүүн</span>
                 )}
                 <p style={{ color: "var(--color-forest)", fontWeight: "600", marginTop: "5px" }}>₮{item.price.toLocaleString()}</p>
               </div>
@@ -110,7 +110,7 @@ export default function CartPage() {
                 onClick={() => removeItem(item._id)}
                 style={{ background: "var(--color-terracotta)", color: "#fff", border: "none", padding: "8px 14px", borderRadius: "6px", fontWeight: "600", cursor: "pointer" }}
               >
-                Устгах 🗑️
+                Устгах
               </button>
             </div>
           </div>
@@ -125,7 +125,7 @@ export default function CartPage() {
           onClick={() => router.push("/checkout")}
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px 28px", borderRadius: "8px", fontSize: "1.1rem", fontWeight: "700", cursor: "pointer" }}
         >
-          Төлбөр тооцоо хийх 🔒
+          Төлбөр тооцоо хийх
         </button>
       </div>
     </main>

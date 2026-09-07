@@ -2,7 +2,6 @@ import dbConnect from "@/lib/mongodb";
 import Order from "@/models/Order";
 import { NextResponse } from "next/server";
 
-// PATCH: Update order status (making vs shipped)
 export async function PATCH(request, context) {
   try {
     await dbConnect();

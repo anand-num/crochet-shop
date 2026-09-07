@@ -12,17 +12,14 @@ const ALLOWED_SUB_CATEGORIES = [
 ];
 
 export default function AdminDashboardClient() {
-  const [activeTab, setActiveTab] = useState("orders"); // "orders", "products", or "manage"
+  const [activeTab, setActiveTab] = useState("orders"); 
   
-  // Orders State
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
-  // Products Management State
   const [products, setProducts] = useState([]);
-  const [editingProduct, setEditingProduct] = useState(null); // Holds product being edited
+  const [editingProduct, setEditingProduct] = useState(null); 
 
-  // Product Form State (Creation & Editing)
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("item");
@@ -30,6 +27,7 @@ export default function AdminDashboardClient() {
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [pdfFile, setPdfFile] = useState(null);
+  const [inStock, setInStock] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -76,7 +74,6 @@ export default function AdminDashboardClient() {
     }
   };
 
-  // Populate form for editing
   const startEditing = (prod) => {
     setEditingProduct(prod);
     setName(prod.name);
@@ -84,9 +81,10 @@ export default function AdminDashboardClient() {
     setCategory(prod.category);
     setSubCategory(prod.subCategory);
     setDescription(prod.description);
+    setInStock(prod.inStock ?? true);
     setImageFile(null);
     setPdfFile(null);
-    setActiveTab("products"); // Switch to form tab
+    setActiveTab("products"); 
   };
 
   const cancelEdit = () => {
@@ -97,6 +95,7 @@ export default function AdminDashboardClient() {
     setDescription("");
     setImageFile(null);
     setPdfFile(null);
+    setInStock(true);
   };
 
   const handleDeleteProduct = async (id) => {
@@ -132,6 +131,7 @@ export default function AdminDashboardClient() {
       formData.append("category", category);
       formData.append("subCategory", subCategory);
       formData.append("description", description);
+      formData.append("inStock", inStock);
       if (imageFile) formData.append("image", imageFile);
       if (pdfFile && category === "pattern") formData.append("pdf", pdfFile);
 
@@ -145,7 +145,7 @@ export default function AdminDashboardClient() {
 
       const data = await res.json();
       if (data.success) {
-        setMessage(editingProduct ? "Бүтээгдэхүүн амжилттай шинэчлэгдлээ! ✨" : "Бүтээгдэхүүн амжилттай нэмэгдлээ! ✨");
+        setMessage(editingProduct ? "Бүтээгдэхүүн амжилттай шинэчлэгдлээ! " : "Бүтээгдэхүүн амжилттай нэмэгдлээ! ");
         fetchProducts();
         if (editingProduct) {
           cancelEdit();
@@ -156,6 +156,7 @@ export default function AdminDashboardClient() {
           setDescription("");
           setImageFile(null);
           setPdfFile(null);
+          setInStock(true);
         }
       } else {
         setMessage("Алдаа гарлаа: " + data.error);
@@ -167,10 +168,14 @@ export default function AdminDashboardClient() {
     }
   };
 
+  // Separate products into In-Stock and Out-of-Stock groups
+  const inStockProducts = products.filter(p => p.inStock !== false);
+  const outOfStockProducts = products.filter(p => p.inStock === false);
+
   return (
     <main style={{ padding: "40px 20px", maxWidth: "1000px", margin: "0 auto" }}>
       <h1 style={{ color: "var(--color-forest)", marginBottom: "20px", textAlign: "center" }}>
-        Enoki.vibes Админ Хэсэг 🧶
+        Enoki.vibes Админ Хэсэг 
       </h1>
 
       {/* Navigation Tabs */}
@@ -187,7 +192,7 @@ export default function AdminDashboardClient() {
             cursor: "pointer"
           }}
         >
-          Захиалга удирдах 📦
+          Захиалга удирдах 
         </button>
         <button 
           onClick={() => { cancelEdit(); setActiveTab("products"); }}
@@ -201,7 +206,7 @@ export default function AdminDashboardClient() {
             cursor: "pointer"
           }}
         >
-          {editingProduct ? "Бараа засварлах ✏️" : "Шинэ бараа нэмэх ➕"}
+          {editingProduct ? "Бараа засварлах " : "Шинэ бараа нэмэх "}
         </button>
         <button 
           onClick={() => setActiveTab("manage")}
@@ -215,7 +220,7 @@ export default function AdminDashboardClient() {
             cursor: "pointer"
           }}
         >
-          Бараа жагсаалт & Засвар 📋
+          Бараа жагсаалт & Засвар 
         </button>
       </div>
 
@@ -241,8 +246,8 @@ export default function AdminDashboardClient() {
                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
                       style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
                     >
-                      <option value="making">Хийгдэж буй 🧶</option>
-                      <option value="shipped">Хүргэлтэд гарсан 🚚</option>
+                      <option value="making">Хийгдэж буй</option>
+                      <option value="shipped">Хүргэлтэд гарсан</option>
                     </select>
                   </div>
                 </div>
@@ -330,6 +335,20 @@ export default function AdminDashboardClient() {
             />
           </div>
 
+          {/* Stock Status Checkbox */}
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f9f9f9", padding: "12px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}>
+            <input 
+              type="checkbox" 
+              id="inStockCheckbox"
+              checked={inStock} 
+              onChange={(e) => setInStock(e.target.checked)} 
+              style={{ width: "20px", height: "20px", cursor: "pointer" }}
+            />
+            <label htmlFor="inStockCheckbox" style={{ fontWeight: "600", cursor: "pointer" }}>
+              {inStock ? "In stock" : "Out of stock"}
+            </label>
+          </div>
+
           <div>
             <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>
               Бүтээгдэхүүний зураг (Image) {editingProduct ? "(Шинээр солих бол оруулна уу)" : ""}:
@@ -369,46 +388,101 @@ export default function AdminDashboardClient() {
               border: "none"
             }}
           >
-            {uploading ? "Хуулж байна... ⏳" : editingProduct ? "Өөрчлөлтийг хадгалах ✨" : "Бүтээгдэхүүн нэмэх ✨"}
+            {uploading ? "Нийтэлж байна..." : editingProduct ? "Өөрчлөлтийг хадгалах " : "Бүтээгдэхүүн нэмэх "}
           </button>
 
           {message && <p style={{ fontWeight: "600", color: "var(--color-forest)" }}>{message}</p>}
         </form>
       )}
 
-      {/* TAB 3: MANAGE PRODUCTS LIST */}
+      {/* TAB 3: MANAGE PRODUCTS LIST & SECTIONS */}
       {activeTab === "manage" && (
         <div>
-          <h2 style={{ color: "var(--color-forest)", marginBottom: "20px" }}>Бүх бараанууд ({products.length})</h2>
+          <h2 style={{ color: "var(--color-forest)", marginBottom: "25px" }}>Бүх бараанууд ({products.length})</h2>
+          
           {products.length === 0 ? (
             <p>Одоогоор бараа байхгүй байна.</p>
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-              {products.map((prod) => (
-                <div key={prod._id} style={{ border: "2px solid var(--color-forest)", padding: "15px", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--color-bg)" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                    {prod.imageUrl && <img src={prod.imageUrl} alt={prod.name} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />}
-                    <div>
-                      <h4 style={{ margin: "0 0 5px 0", color: "var(--color-forest)" }}>{prod.name}</h4>
-                      <p style={{ margin: 0, fontSize: "0.9rem" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
-                    </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "35px" }}>
+              
+              {/* SECTION 1: IN STOCK PRODUCTS */}
+              <div>
+                <h3 style={{ color: "var(--color-forest)", marginBottom: "15px", borderBottom: "2px solid var(--color-forest)", paddingBottom: "5px" }}>
+                  Бэлэн байгаа бараанууд ({inStockProducts.length})
+                </h3>
+                
+                {inStockProducts.length === 0 ? (
+                  <p style={{ fontStyle: "italic", color: "#666" }}>Бэлэн байгаа бараа алга байна.</p>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                    {inStockProducts.map((prod) => (
+                      <div key={prod._id} style={{ border: "2px solid var(--color-forest)", padding: "15px", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--color-bg)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+                          {prod.imageUrl && <img src={prod.imageUrl} alt={prod.name} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />}
+                          <div>
+                            <h4 style={{ margin: "0 0 5px 0", color: "var(--color-forest)" }}>{prod.name}</h4>
+                            <p style={{ margin: 0, fontSize: "0.9rem" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <button 
+                            onClick={() => startEditing(prod)}
+                            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Засах 
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteProduct(prod._id)}
+                            style={{ background: "#d9534f", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Устгах 
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div style={{ display: "flex", gap: "10px" }}>
-                    <button 
-                      onClick={() => startEditing(prod)}
-                      style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
-                    >
-                      Засах ✏️
-                    </button>
-                    <button 
-                      onClick={() => handleDeleteProduct(prod._id)}
-                      style={{ background: "#d9534f", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
-                    >
-                      Устгах 🗑️
-                    </button>
+                )}
+              </div>
+
+              {/* SECTION 2: OUT OF STOCK PRODUCTS */}
+              <div>
+                <h3 style={{ color: "#d9534f", marginBottom: "15px", borderBottom: "2px solid #d9534f", paddingBottom: "5px" }}>
+                  Дууссан бараанууд ({outOfStockProducts.length}) 
+                </h3>
+                
+                {outOfStockProducts.length === 0 ? (
+                  <p style={{ fontStyle: "italic", color: "#666" }}>Дууссан бараа байхгүй байна.</p>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                    {outOfStockProducts.map((prod) => (
+                      <div key={prod._id} style={{ border: "2px solid #d9534f", padding: "15px", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff5f5" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+                          {prod.imageUrl && <img src={prod.imageUrl} alt={prod.name} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px", opacity: 0.7 }} />}
+                          <div>
+                            <h4 style={{ margin: "0 0 5px 0", color: "#d9534f" }}>{prod.name}</h4>
+                            <p style={{ margin: 0, fontSize: "0.9rem" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
+                          </div>
+                        </div>
+                        <div style={{ display: "flex", gap: "10px" }}>
+                          <button 
+                            onClick={() => startEditing(prod)}
+                            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Засах 
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteProduct(prod._id)}
+                            style={{ background: "#d9534f", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                          >
+                            Устгах 
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
+                )}
+              </div>
+
             </div>
           )}
         </div>

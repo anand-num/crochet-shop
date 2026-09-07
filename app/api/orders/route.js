@@ -2,7 +2,6 @@ import dbConnect from "@/lib/mongodb";
 import Order from "@/models/Order";
 import { NextResponse } from "next/server";
 
-// GET: Fetch orders for a specific user OR all orders for the admin panel
 export async function GET(request) {
   try {
     await dbConnect();
@@ -11,10 +10,8 @@ export async function GET(request) {
 
     let orders;
     if (userId) {
-      // Fetch orders for this specific user
       orders = await Order.find({ userId }).sort({ createdAt: -1 });
     } else {
-      // Fetch ALL orders for the admin dashboard
       orders = await Order.find({}).sort({ createdAt: -1 });
     }
 
@@ -25,7 +22,6 @@ export async function GET(request) {
   }
 }
 
-// POST: Create a new order (triggered at checkout)
 export async function POST(request) {
   try {
     await dbConnect();
@@ -36,12 +32,11 @@ export async function POST(request) {
       return NextResponse.json({ success: false, error: "Invalid order data provided" }, { status: 400 });
     }
 
-    // Save the mixed order
     const newOrder = await Order.create({
       userId,
       items,
       totalAmount,
-      status: "making", // Default initial status
+      status: "making", 
     });
 
     return NextResponse.json({ success: true, order: newOrder }, { status: 201 });

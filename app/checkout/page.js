@@ -87,7 +87,7 @@ export default function CheckoutPage() {
   if (!isLoaded) {
     return (
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit" }}>
-        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Дулаан дэлгэрэнгүйг ачаалж байна... 🧶</p>
+        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Ачаалж байна...</p>
       </main>
     );
   }
@@ -97,14 +97,14 @@ export default function CheckoutPage() {
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", maxWidth: "500px", margin: "0 auto" }}>
         <div style={{ background: "var(--color-bg)", border: "2px solid var(--color-forest)", borderRadius: "16px", padding: "40px", boxShadow: "0 6px 16px rgba(56, 102, 65, 0.08)" }}>
           <h1 style={{ color: "var(--color-forest)", fontSize: "2.1rem", marginBottom: "15px" }}>
-            Нэвтрэх шаардлагатай 🧶
+            Нэвтрэх шаардлагатай
           </h1>
           <p style={{ color: "var(--color-forest)", opacity: 0.85, fontSize: "1.1rem", marginBottom: "30px", lineHeight: "1.5" }}>
-            Төлбөр тооцоогоо аюулгүй хийхийн тулд Crochet Corner бүртгэлдээ нэвтэрнэ үү.
+            Эхлээд нэвтэрнэ үү.
           </p>
           <SignInButton mode="modal">
             <button style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "12px 28px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", cursor: "pointer" }}>
-              Төлбөр хийхийн тулд нэвтрэх 🔒
+              Төлбөр хийхийн тулд нэвтрэх
             </button>
           </SignInButton>
         </div>
@@ -117,23 +117,23 @@ export default function CheckoutPage() {
       <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", maxWidth: "600px", margin: "0 auto" }}>
         <div style={{ background: "var(--color-bg)", border: "2px solid var(--color-forest)", borderRadius: "16px", padding: "40px", boxShadow: "0 6px 16px rgba(56, 102, 65, 0.08)" }}>
           <h1 style={{ color: "var(--color-forest)", fontSize: "2.3rem", marginBottom: "15px" }}>
-            Захиалга амжилттай хийгдлээ! 🎉🧶
+            Захиалга амжилттай хийгдлээ! 
           </h1>
           <p style={{ color: "var(--color-forest)", opacity: 0.85, fontSize: "1.1rem", lineHeight: "1.6", marginBottom: "30px" }}>
-            Баярлалаа, <strong>{formData.name}</strong>! Бид таны дулаахан бүтээлийг хайр халамжтайгаар баглаж байна. Баталжуулах имэйл <strong>{formData.email}</strong> хаяг руу илгээгдлээ.
+            Баярлалаа, <strong>{formData.name}</strong>! Бид таны захиалгыг хайраар урлаж байна. Баталжуулах имэйл <strong>{formData.email}</strong> хаяг руу илгээгдлээ.
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap" }}>
             <Link 
               href="/purchases" 
               style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "1rem" }}
             >
-              Миний захиалгуудыг харах 📦
+              Захиалгуудыг харах 
             </Link>
             <Link 
               href="/shop" 
               style={{ background: "transparent", color: "var(--color-forest)", border: "2px solid var(--color-forest)", padding: "12px 24px", borderRadius: "8px", textDecoration: "none", fontWeight: "700", fontSize: "1rem" }}
             >
-              Үргэлжлүүлэн дэлгүүр хэсэх 🛍️
+              Үргэлжлүүлэн дэлгүүр хэсэх
             </Link>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default function CheckoutPage() {
           href="/shop" 
           style={{ background: "var(--color-forest)", color: "var(--color-bg)", padding: "10px 22px", borderRadius: "8px", textDecoration: "none", fontWeight: "600" }}
         >
-          Дэлгүүр рүү очих 🧶
+          Дэлгүүр рүү очих
         </Link>
       </main>
     );
@@ -159,7 +159,7 @@ export default function CheckoutPage() {
   return (
     <main style={{ padding: "40px 20px", maxWidth: "1000px", margin: "0 auto", fontFamily: "inherit" }}>
       <h1 style={{ color: "var(--color-forest)", fontSize: "2.5rem", marginBottom: "30px", textAlign: "center" }}>
-        {isBuyNow ? "Шууд төлбөр тооцоо ⚡" : "Аюулгүй төлбөр тооцоо 🔒"}
+        {isBuyNow ? "Шууд төлөх " : "Бүгдийг төлөх"}
       </h1>
 
       <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: "30px", alignItems: "start", flexWrap: "wrap" }}>
@@ -168,7 +168,7 @@ export default function CheckoutPage() {
           onSubmit={handleSubmit} 
           style={{ flex: "1 1 500px", background: "var(--color-bg)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "30px", boxShadow: "0 4px 12px rgba(56, 102, 65, 0.05)", display: "flex", flexDirection: "column", gap: "20px" }}
         >
-          <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "5px" }}>Хүргэлтийн мэдээлэл 📦</h2>
+          <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "5px" }}>Хүргэлтийн мэдээлэл</h2>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             <label style={{ color: "var(--color-forest)", fontWeight: "600", fontSize: "0.95rem" }}>Бүтэн нэр</label>
@@ -197,7 +197,7 @@ export default function CheckoutPage() {
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label style={{ color: "var(--color-forest)", fontWeight: "600", fontSize: "0.95rem" }}>Гудамж, байрны хаяг</label>
+            <label style={{ color: "var(--color-forest)", fontWeight: "600", fontSize: "0.95rem" }}>Хаяг байршил</label>
             <input 
               type="text" 
               name="address" 
@@ -223,7 +223,7 @@ export default function CheckoutPage() {
               />
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-              <label style={{ color: "var(--color-forest)", fontWeight: "600", fontSize: "0.95rem" }}>Шуудангийн код</label>
+              <label style={{ color: "var(--color-forest)", fontWeight: "600", fontSize: "0.95rem" }}>Шуудангийн хаяг</label>
               <input 
                 type="text" 
                 name="postalCode" 
@@ -241,12 +241,12 @@ export default function CheckoutPage() {
             disabled={isSubmitting}
             style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "14px", borderRadius: "8px", fontWeight: "700", fontSize: "1.1rem", marginTop: "10px", cursor: isSubmitting ? "not-allowed" : "pointer", opacity: isSubmitting ? 0.7 : 1 }}
           >
-            {isSubmitting ? "Захиалгыг боловсруулж байна... 🧶" : `Захиалга баталгаажуулах (₮${totalPrice.toLocaleString()}) 🛍️`}
+            {isSubmitting ? "Захиалгыг боловсруулж байна... " : `Захиалга баталгаажуулах (₮${totalPrice.toLocaleString()})`}
           </button>
         </form>
 
         <div style={{flex: "1 1 350px", background: "var(--color-cream)", border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "25px" }}>
-          <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "20px" }}>Захиалгын тойм 📋</h2>
+          <h2 style={{ color: "var(--color-forest)", fontSize: "1.4rem", marginBottom: "20px" }}>Захиалгын тойм</h2>
           
           <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginBottom: "20px", maxHeight: "300px", overflowY: "auto" }}>
             {cart.map((item) => (

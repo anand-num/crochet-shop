@@ -77,10 +77,10 @@ function ShopContent() {
     <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <h1 style={{ fontSize: "2.5rem", color: "var(--color-forest)", marginBottom: "10px" }}>
-          {mainCategoryFilter === "item" ? "Сүлжмэл бүтээгдэхүүнүүд 🧸" : mainCategoryFilter === "pattern" ? "Цахим загварууд 📄" : "Крошет дэлгүүр 🧶"}
+          {mainCategoryFilter === "item" ? "Нэхмэл бүтээгдэхүүн" : mainCategoryFilter === "pattern" ? "Цахим загварууд" : "Нэхмэлийн дэлгүүр"}
         </h1>
         <p style={{ color: "var(--color-text)", opacity: 0.8, fontSize: "1.1rem" }}>
-          Хайр шингээж урласан сүлжмэл бүтээгдэхүүн болон загваруудаас сонгоорой.
+          Хайраа шингээж урласан сүлжмэл бүтээгдэхүүн болон загваруудаас сонгоорой.
         </p>
       </div>
 
@@ -149,7 +149,7 @@ function ShopContent() {
 
       {sortedProducts.length === 0 ? (
         <div style={{ textAlign: "center", padding: "60px", color: "var(--color-text)", opacity: 0.7, fontSize: "1.1rem" }}>
-          Таны шүүлтүүрт тохирох бүтээгдэхүүн олдсонгүй. Тун удахгүй нэмэгдэх болно! 🧶
+          Таны шүүлтүүрт тохирох бүтээгдэхүүн олдсонгүй.
         </div>
       ) : (
         <div style={{ 
@@ -215,7 +215,7 @@ function ShopContent() {
 
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Дэлгүүрийг ачаалж байна... 🧶</div>}>
+    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Дэлгүүрийг ачаалж байна... </div>}>
       <ShopContent />
     </Suspense>
   );

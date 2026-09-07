@@ -5,7 +5,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import { auth } from "@clerk/nextjs/server";
 
 export const metadata = {
-  title: "Enoki.vibes 🧶",
+  title: "Enoki.vibes",
   description: "Гараар урласан сүлжмэл тоглоом, цүнх болон загварууд",
   viewport: "width=device-width, initial-scale=1.0",
 };

@@ -26,15 +26,18 @@ const ProductSchema = new mongoose.Schema(
     subCategory: {
       type: String,
       required: [true, "Please specify a sub-category."],
-      // Matches your dropdown values exactly
       enum: ["keychain", "plushie", "hat", "earwarmer", "scarf", "purse & pouch", "flowers"],
     },
     patternPdfUrl: {
-      type: String, // Optional, used if it's a digital pattern
+      type: String, 
+    },
+    inStock: {
+      type: Boolean,
+      default: true,
     },
   },
   {
-    timestamps: true, // Automatically adds `createdAt` and `updatedAt` for sorting by "Newest"
+    timestamps: true, 
   }
 );
 
