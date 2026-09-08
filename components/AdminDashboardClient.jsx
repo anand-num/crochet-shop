@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const ALLOWED_SUB_CATEGORIES = [
+const DEFAULT_SUB_CATEGORIES = [
   "keychain", 
   "plushie", 
   "hat", 
@@ -20,6 +20,9 @@ export default function AdminDashboardClient() {
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null); 
 
+  const [subCategories, setSubCategories] = useState(DEFAULT_SUB_CATEGORIES);
+  const [isAddingNewSub, setIsAddingNewSub] = useState(false);
+
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("item");
@@ -34,6 +37,7 @@ export default function AdminDashboardClient() {
   useEffect(() => {
     fetchOrders();
     fetchProducts();
+    fetchSubCategories();
   }, []);
 
   const fetchOrders = async () => {
@@ -55,6 +59,19 @@ export default function AdminDashboardClient() {
       if (data.success) setProducts(data.products);
     } catch (err) {
       console.error("Failed to load products", err);
+    }
+  };
+
+  const fetchSubCategories = async () => {
+    try {
+      const res = await fetch("/api/admin/subcategories");
+      const data = await res.json();
+      if (data.success && data.subCategories) {
+        const combined = Array.from(new Set([...DEFAULT_SUB_CATEGORIES, ...data.subCategories]));
+        setSubCategories(combined);
+      }
+    } catch (err) {
+      console.error("Failed to load sub-categories", err);
     }
   };
 
@@ -84,6 +101,7 @@ export default function AdminDashboardClient() {
     setInStock(prod.inStock ?? true);
     setImageFile(null);
     setPdfFile(null);
+    setIsAddingNewSub(false);
     setActiveTab("products"); 
   };
 
@@ -96,6 +114,7 @@ export default function AdminDashboardClient() {
     setImageFile(null);
     setPdfFile(null);
     setInStock(true);
+    setIsAddingNewSub(false);
   };
 
   const handleDeleteProduct = async (id) => {
@@ -129,7 +148,7 @@ export default function AdminDashboardClient() {
       formData.append("name", name);
       formData.append("price", price);
       formData.append("category", category);
-      formData.append("subCategory", subCategory);
+      formData.append("subCategory", subCategory.trim().toLowerCase());
       formData.append("description", description);
       formData.append("inStock", inStock);
       if (imageFile) formData.append("image", imageFile);
@@ -145,8 +164,9 @@ export default function AdminDashboardClient() {
 
       const data = await res.json();
       if (data.success) {
-        setMessage(editingProduct ? "Бүтээгдэхүүн амжилттай шинэчлэгдлээ! " : "Бүтээгдэхүүн амжилттай нэмэгдлээ! ");
+        setMessage(editingProduct ? "Бүтээгдэхүүн амжилттай шинэчлэгдлээ!" : "Бүтээгдэхүүн амжилттай нэмэгдлээ!");
         fetchProducts();
+        fetchSubCategories();
         if (editingProduct) {
           cancelEdit();
         } else {
@@ -157,6 +177,7 @@ export default function AdminDashboardClient() {
           setImageFile(null);
           setPdfFile(null);
           setInStock(true);
+          setIsAddingNewSub(false);
         }
       } else {
         setMessage("Алдаа гарлаа: " + data.error);
@@ -168,7 +189,6 @@ export default function AdminDashboardClient() {
     }
   };
 
-  // Separate products into In-Stock and Out-of-Stock groups
   const inStockProducts = products.filter(p => p.inStock !== false);
   const outOfStockProducts = products.filter(p => p.inStock === false);
 
@@ -178,7 +198,6 @@ export default function AdminDashboardClient() {
         Enoki.vibes Админ Хэсэг 
       </h1>
 
-      {/* Navigation Tabs */}
       <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "30px", flexWrap: "wrap" }}>
         <button 
           onClick={() => setActiveTab("orders")}
@@ -206,7 +225,7 @@ export default function AdminDashboardClient() {
             cursor: "pointer"
           }}
         >
-          {editingProduct ? "Бараа засварлах " : "Шинэ бараа нэмэх "}
+          {editingProduct ? "Бараа засварлах" : "Шинэ бараа нэмэх"}
         </button>
         <button 
           onClick={() => setActiveTab("manage")}
@@ -224,7 +243,6 @@ export default function AdminDashboardClient() {
         </button>
       </div>
 
-      {/* TAB 1: ORDERS */}
       {activeTab === "orders" && (
         <div>
           <h2 style={{ color: "var(--color-forest)", marginBottom: "20px" }}>Хэрэглэгчийн захиалгууд</h2>
@@ -257,7 +275,6 @@ export default function AdminDashboardClient() {
         </div>
       )}
 
-      {/* TAB 2: CREATE / EDIT PRODUCT FORM */}
       {activeTab === "products" && (
         <form onSubmit={handleFormSubmit} style={{ border: "2px solid var(--color-forest)", padding: "30px", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "20px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -311,17 +328,47 @@ export default function AdminDashboardClient() {
 
           <div>
             <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Дэд төрөл (Sub-category):</label>
-            <select 
-              value={subCategory} 
-              onChange={(e) => setSubCategory(e.target.value)}
-              required
-              style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
-            >
-              <option value="">-- Дэд төрөл сонгоно уу --</option>
-              {ALLOWED_SUB_CATEGORIES.map((sub, index) => (
-                <option key={index} value={sub}>{sub}</option>
-              ))}
-            </select>
+            {!isAddingNewSub ? (
+              <div style={{ display: "flex", gap: "10px" }}>
+                <select 
+                  value={subCategory} 
+                  onChange={(e) => {
+                    if (e.target.value === "NEW_CUSTOM") {
+                      setIsAddingNewSub(true);
+                      setSubCategory("");
+                    } else {
+                      setSubCategory(e.target.value);
+                    }
+                  }}
+                  required
+                  style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+                >
+                  <option value="">-- Дэд төрөл сонгоно уу --</option>
+                  {subCategories.map((sub, index) => (
+                    <option key={index} value={sub}>{sub}</option>
+                  ))}
+                  <option value="NEW_CUSTOM" style={{ fontWeight: "bold", color: "var(--color-forest)" }}>+ Шинэ дэд төрөл нэмэх...</option>
+                </select>
+              </div>
+            ) : (
+              <div style={{ display: "flex", gap: "10px" }}>
+                <input 
+                  type="text" 
+                  placeholder="Шинэ дэд төрлийн нэр бичнэ үү..."
+                  value={subCategory}
+                  onChange={(e) => setSubCategory(e.target.value)}
+                  required
+                  style={{ flex: 1, padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+                />
+                <button 
+                  type="button"
+                  onClick={() => { setIsAddingNewSub(false); setSubCategory(""); }}
+                  style={{ padding: "0 15px", background: "transparent", border: "1px solid var(--color-forest)", borderRadius: "6px", cursor: "pointer", color: "var(--color-forest)" }}
+                >
+                  Буцах
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
@@ -335,7 +382,6 @@ export default function AdminDashboardClient() {
             />
           </div>
 
-          {/* Stock Status Checkbox */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f9f9f9", padding: "12px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}>
             <input 
               type="checkbox" 
@@ -388,14 +434,13 @@ export default function AdminDashboardClient() {
               border: "none"
             }}
           >
-            {uploading ? "Нийтэлж байна..." : editingProduct ? "Өөрчлөлтийг хадгалах " : "Бүтээгдэхүүн нэмэх "}
+            {uploading ? "Нийтэлж байна..." : editingProduct ? "Өөрчлөлтийг хадгалах" : "Бүтээгдэхүүн нэмэх"}
           </button>
 
           {message && <p style={{ fontWeight: "600", color: "var(--color-forest)" }}>{message}</p>}
         </form>
       )}
 
-      {/* TAB 3: MANAGE PRODUCTS LIST & SECTIONS */}
       {activeTab === "manage" && (
         <div>
           <h2 style={{ color: "var(--color-forest)", marginBottom: "25px" }}>Бүх бараанууд ({products.length})</h2>
@@ -405,7 +450,6 @@ export default function AdminDashboardClient() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "35px" }}>
               
-              {/* SECTION 1: IN STOCK PRODUCTS */}
               <div>
                 <h3 style={{ color: "var(--color-forest)", marginBottom: "15px", borderBottom: "2px solid var(--color-forest)", paddingBottom: "5px" }}>
                   Бэлэн байгаа бараанууд ({inStockProducts.length})
@@ -444,10 +488,9 @@ export default function AdminDashboardClient() {
                 )}
               </div>
 
-              {/* SECTION 2: OUT OF STOCK PRODUCTS */}
               <div>
                 <h3 style={{ color: "#d9534f", marginBottom: "15px", borderBottom: "2px solid #d9534f", paddingBottom: "5px" }}>
-                  Дууссан бараанууд ({outOfStockProducts.length}) 
+                  Дууссан бараанууд ({outOfStockProducts.length})
                 </h3>
                 
                 {outOfStockProducts.length === 0 ? (

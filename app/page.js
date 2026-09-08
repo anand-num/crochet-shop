@@ -68,9 +68,9 @@ export default function HomePage() {
         ) : products.length === 0 ? (
           <p style={{ textAlign: "center", color: "var(--color-forest)", opacity: 0.8, padding: "40px 0" }}>Одоогоор бүтээгдэхүүн нэмэгдээгүй байна.</p>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "25px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "25px" }}>
             {products.map((product) => (
-              <div key={product._id} style={{ border: "2px solid var(--color-forest)", borderRadius: "12px", padding: "15px", background: "var(--color-bg)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+              <div className="product-card" key={product._id} style={{ border: "1px solid var(--color-forest)", borderRadius: "12px", padding: "15px", background: "var(--color-bg)", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
                 <div>
                   <div style={{ width: "100%", height: "200px", borderRadius: "8px", overflow: "hidden", marginBottom: "12px", background: "rgba(0,0,0,0.05)" }}>
                     <img src={product.imageUrl} alt={product.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -91,7 +91,7 @@ export default function HomePage() {
       </section>
 
       {/* 3. Contact Information Section */}
-      <section style={{ background: "var(--color-cream)", padding: "60px 20px", borderTop: "2px solid var(--color-forest)", borderBottom: "2px solid var(--color-forest)" }}>
+      <section style={{ background: "var(--color-cream)", padding: "60px 20px", border: "1px solid var(--color-forest)" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
           <h2 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бидэнтэй холбогдох 🪡</h2>
           <p style={{ color: "var(--color-forest)", opacity: 0.85, fontSize: "1.1rem", marginBottom: "30px" }}>

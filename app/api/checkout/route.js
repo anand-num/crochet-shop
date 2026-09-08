@@ -14,7 +14,7 @@ export async function POST(request) {
     return NextResponse.json({ 
       success: true, 
       orderId: orderId,
-      message: "Order placed successfully!" 
+      message: "Амжилттай захиалга хийлээ!" 
     }, { status: 200 });
 
   } catch (error) {

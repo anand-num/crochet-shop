@@ -70,7 +70,7 @@ function ShopContent() {
   });
 
   if (loading) {
-    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Дулаан бараануудыг ачаалж байна... 🧶</div>;
+    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Дулаан бараануудыг ачаалж байна... </div>;
   }
 
   return (
@@ -158,7 +158,7 @@ function ShopContent() {
           gap: "30px" 
         }}>
           {sortedProducts.map((product) => (
-            <div key={product._id} style={{ 
+            <div className="product-card" key={product._id} style={{ 
               background: "var(--color-bg)", 
               border: "1px solid var(--color-forest)",
               borderRadius: "12px", 

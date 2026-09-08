@@ -8,6 +8,9 @@ export const metadata = {
   title: "Enoki.vibes",
   description: "Гараар урласан сүлжмэл тоглоом, цүнх болон загварууд",
   viewport: "width=device-width, initial-scale=1.0",
+  icons: {
+    icon: "/enoki_logo.png",
+  },
 };
 
 export default async function RootLayout({ children }) {
