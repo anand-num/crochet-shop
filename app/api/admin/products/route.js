@@ -22,6 +22,30 @@ export async function POST(request) {
       );
     }
 
+    if (category === "pattern") {
+      if (!pdfFile || typeof pdfFile !== "object") {
+        return NextResponse.json(
+          { success: false, error: "Загвар (pattern) ангилалд PDF файл оруулна уу." },
+          { status: 400 }
+        );
+      }
+
+      if (pdfFile.type !== "application/pdf") {
+        return NextResponse.json(
+          { success: false, error: "Зөвхөн .pdf өргөтгөлтэй файл оруулна уу." },
+          { status: 400 }
+        );
+      }
+
+      const MAX_FILE_SIZE = 10 * 1024 * 1024; 
+      if (pdfFile.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { success: false, error: "PDF файлын хэмжээ 10MB-аас хэтрэхгүй байх ёстой." },
+          { status: 400 }
+        );
+      }
+    }
+
     await connectDB();
     const data = await request.formData();
     
