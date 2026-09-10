@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server"; 
 import connectDB from "@/lib/mongodb";
 import Product from "@/models/Product";
 import { v2 as cloudinary } from "cloudinary";
@@ -9,19 +10,18 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export async function GET() {
-  try {
-    await connectDB();
-    const products = await Product.find({}).sort({ createdAt: -1 });
-    return NextResponse.json({ success: true, products }, { status: 200 });
-  } catch (error) {
-    console.error("Fetch products error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-
 export async function POST(request) {
   try {
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+
+    if (!userEmail || userEmail !== process.env.ADMIN_EMAIL) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized access" },
+        { status: 403 }
+      );
+    }
+
     await connectDB();
     const data = await request.formData();
     

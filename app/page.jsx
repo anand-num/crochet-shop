@@ -93,7 +93,7 @@ export default function HomePage() {
       {/* 3. Contact Information Section */}
       <section style={{ background: "var(--color-cream)", padding: "60px 20px", border: "1px solid var(--color-forest)" }}>
         <div style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
-          <h2 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бидэнтэй холбогдох 🪡</h2>
+          <h2 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бидэнтэй холбогдохc</h2>
           <p style={{ color: "var(--color-forest)", opacity: 0.85, fontSize: "1.1rem", marginBottom: "30px" }}>
             Асууж тодруулах зүйл байвал эсвэл захиалга өгөхөд тусламж хэрэгтэй бол бидэнтэй холбогдоорой!
           </p>

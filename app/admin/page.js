@@ -11,9 +11,9 @@ export default async function AdminPage() {
 
   const user = await currentUser();
   const userEmail = user?.emailAddresses?.[0]?.emailAddress;
-  const ADMIN_EMAIL = "tahiasharsan@gmail.com"; 
+  const adminEmail = process.env.ADMIN_EMAIL;
 
-  if (userEmail !== ADMIN_EMAIL) {
+  if (!userEmail || userEmail !== adminEmail) {
     return (
       <main style={{ padding: "80px 20px", textAlign: "center", color: "var(--color-forest)" }}>
         <h1>Хандах эрх хүрэхгүй байна </h1>
