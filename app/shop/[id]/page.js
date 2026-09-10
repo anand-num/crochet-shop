@@ -1,7 +1,166 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+
+const styles = {
+  mainContainer: {
+    padding: "40px 20px",
+    maxWidth: "900px",
+    margin: "0 auto",
+    fontFamily: "inherit",
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+  },
+  centerBox: {
+    padding: "60px 20px",
+    textAlign: "center",
+    fontFamily: "inherit",
+    background: "var(--color-bg)",
+  },
+  loadingText: {
+    color: "var(--color-forest)",
+    fontSize: "1.2rem",
+  },
+  notFoundTitle: {
+    color: "var(--color-forest)",
+    fontSize: "2rem",
+    marginBottom: "15px",
+  },
+  backLink: {
+    color: "var(--color-forest)",
+    textDecoration: "none",
+    fontWeight: "600",
+    display: "inline-block",
+    marginBottom: "25px",
+  },
+  notFoundLink: {
+    color: "var(--color-forest)",
+    fontWeight: "600",
+    textDecoration: "underline",
+  },
+  gridContainer: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "40px",
+    alignItems: "start",
+    flexWrap: "wrap",
+  },
+  imageWrapper: {
+    width: "100%",
+    height: "350px",
+    background: "rgba(0,0,0,0.05)",
+    borderRadius: "12px",
+    overflow: "hidden",
+    border: "2px solid var(--color-forest)",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  detailsColumn: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "15px",
+  },
+  badge: {
+    fontSize: "0.75rem",
+    background: "var(--color-sage)",
+    color: "var(--color-text)",
+    padding: "4px 8px",
+    borderRadius: "4px",
+    fontWeight: "700",
+    textTransform: "uppercase",
+    width: "fit-content",
+  },
+  title: {
+    color: "var(--color-forest)",
+    fontSize: "2.2rem",
+    margin: 0,
+  },
+  price: {
+    color: "var(--color-forest)",
+    fontSize: "1.4rem",
+    fontWeight: "700",
+  },
+  description: {
+    color: "var(--color-text)",
+    opacity: 0.85,
+    lineHeight: "1.6",
+  },
+  quantityContainer: {
+    display: "flex",
+    alignItems: "center",
+    gap: "15px",
+    marginTop: "10px",
+  },
+  quantityLabel: {
+    color: "var(--color-forest)",
+    fontWeight: "600",
+  },
+  quantityBox: {
+    display: "flex",
+    alignItems: "center",
+    border: "2px solid var(--color-forest)",
+    borderRadius: "8px",
+    overflow: "hidden",
+    background: "var(--color-bg)",
+  },
+  quantityButton: {
+    background: "transparent",
+    border: "none",
+    padding: "8px 16px",
+    color: "var(--color-forest)",
+    fontWeight: "bold",
+    fontSize: "1.1rem",
+    cursor: "pointer",
+  },
+  quantityNumber: {
+    padding: "0 14px",
+    color: "var(--color-text)",
+    fontWeight: "700",
+    fontSize: "1.1rem",
+  },
+  patternNotice: {
+    background: "var(--color-cream)",
+    padding: "10px 14px",
+    borderRadius: "8px",
+    border: "1px dashed var(--color-forest)",
+    fontSize: "0.9rem",
+    color: "var(--color-forest)",
+  },
+  buttonsColumn: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "10px",
+    marginTop: "10px",
+  },
+  addToCartButton: (added) => ({
+    background: added ? "var(--color-sage)" : "var(--color-forest)",
+    color: "var(--color-bg)",
+    border: "none",
+    padding: "14px",
+    borderRadius: "8px",
+    fontWeight: "700",
+    fontSize: "1.1rem",
+    cursor: "pointer",
+    transition: "background 0.2s",
+  }),
+  buyNowButton: {
+    background: "transparent",
+    color: "var(--color-forest)",
+    border: "2px solid var(--color-forest)",
+    padding: "14px",
+    borderRadius: "8px",
+    fontWeight: "700",
+    fontSize: "1.1rem",
+    cursor: "pointer",
+    transition: "opacity 0.2s",
+  },
+};
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -69,17 +228,17 @@ export default function ProductDetailPage() {
 
   if (loading) {
     return (
-      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
-        <p style={{ color: "var(--color-forest)", fontSize: "1.2rem" }}>Ачаалж байна...</p>
+      <main style={styles.centerBox}>
+        <p style={styles.loadingText}>Ачаалж байна...</p>
       </main>
     );
   }
 
   if (!product) {
     return (
-      <main style={{ padding: "60px 20px", textAlign: "center", fontFamily: "inherit", background: "var(--color-bg)" }}>
-        <h1 style={{ color: "var(--color-forest)", fontSize: "2rem", marginBottom: "15px" }}>Бүтээгдэхүүн олдсонгүй</h1>
-        <Link href="/shop" style={{ color: "var(--color-forest)", fontWeight: "600", textDecoration: "underline" }}>
+      <main style={styles.centerBox}>
+        <h1 style={styles.notFoundTitle}>Бүтээгдэхүүн олдсонгүй</h1>
+        <Link href="/shop" style={styles.notFoundLink}>
           Дэлгүүр рүү буцах
         </Link>
       </main>
@@ -89,88 +248,65 @@ export default function ProductDetailPage() {
   const isPattern = product.category === "pattern";
 
   return (
-    <main style={{ padding: "40px 20px", maxWidth: "900px", margin: "0 auto", fontFamily: "inherit", background: "var(--color-bg)", color: "var(--color-text)", transition: "background-color 0.3s ease, color 0.3s ease" }}>
-      <Link 
-        href="/shop" 
-        style={{ color: "var(--color-forest)", textDecoration: "none", fontWeight: "600", display: "inline-block", marginBottom: "25px" }}
-      >
+    <main style={styles.mainContainer}>
+      <Link href="/shop" style={styles.backLink}>
         ← Дэлгүүр рүү буцах
       </Link>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", alignItems: "start", flexWrap: "wrap" }}>
-        <div style={{ width: "100%", height: "350px", background: "rgba(0,0,0,0.05)", borderRadius: "12px", overflow: "hidden", border: "2px solid var(--color-forest)" }}>
+      <div style={styles.gridContainer}>
+        <div style={styles.imageWrapper}>
           <img 
             src={product.imageUrl} 
             alt={product.name} 
-            style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+            style={styles.image} 
           />
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-          <span style={{ fontSize: "0.75rem", background: "var(--color-sage)", color: "var(--color-text)", padding: "4px 8px", borderRadius: "4px", fontWeight: "700", textTransform: "uppercase", width: "fit-content" }}>
+        <div style={styles.detailsColumn}>
+          <span style={styles.badge}>
             {isPattern ? "Цахим загвар" : "Бэлэн бүтээгдэхүүн"}
           </span>
 
-          <h1 style={{ color: "var(--color-forest)", fontSize: "2.2rem", margin: 0 }}>{product.name}</h1>
-          <p style={{ color: "var(--color-forest)", fontSize: "1.4rem", fontWeight: "700" }}>₮{product.price.toLocaleString()}</p>
-          <p style={{ color: "var(--color-text)", opacity: 0.85, lineHeight: "1.6" }}>{product.description}</p>
+          <h1 style={styles.title}>{product.name}</h1>
+          <p style={styles.price}>₮{product.price.toLocaleString()}</p>
+          <p style={styles.description}>{product.description}</p>
 
           {!isPattern ? (
-            <div style={{ display: "flex", alignItems: "center", gap: "15px", marginTop: "10px" }}>
-              <span style={{ color: "var(--color-forest)", fontWeight: "600" }}>Тоо ширхэг:</span>
-              <div style={{ display: "flex", alignItems: "center", border: "2px solid var(--color-forest)", borderRadius: "8px", overflow: "hidden", background: "var(--color-bg)" }}>
+            <div style={styles.quantityContainer}>
+              <span style={styles.quantityLabel}>Тоо ширхэг:</span>
+              <div style={styles.quantityBox}>
                 <button 
                   onClick={() => handleQuantityChange(-1)}
-                  style={{ background: "transparent", border: "none", padding: "8px 16px", color: "var(--color-forest)", fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer" }}
+                  style={styles.quantityButton}
                 >
                   -
                 </button>
-                <span style={{ padding: "0 14px", color: "var(--color-text)", fontWeight: "700", fontSize: "1.1rem" }}>{quantity}</span>
+                <span style={styles.quantityNumber}>{quantity}</span>
                 <button 
                   onClick={() => handleQuantityChange(1)}
-                  style={{ background: "transparent", border: "none", padding: "8px 16px", color: "var(--color-forest)", fontWeight: "bold", fontSize: "1.1rem", cursor: "pointer" }}
+                  style={styles.quantityButton}
                 >
                   +
                 </button>
               </div>
             </div>
           ) : (
-            <div style={{ background: "var(--color-cream)", padding: "10px 14px", borderRadius: "8px", border: "1px dashed var(--color-forest)", fontSize: "0.9rem", color: "var(--color-forest)" }}>
+            <div style={styles.patternNotice}>
               Шууд татаж авах боломжтой цахим загвар (Худалдаж авсны дараа таны захиалгын хэсэгт PDF илгээгдэнэ)
             </div>
           )}
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "10px" }}>
+          <div style={styles.buttonsColumn}>
             <button 
               onClick={addToCart}
-              style={{ 
-                background: added ? "var(--color-sage)" : "var(--color-forest)", 
-                color: "var(--color-bg)", 
-                border: "none", 
-                padding: "14px", 
-                borderRadius: "8px", 
-                fontWeight: "700", 
-                fontSize: "1.1rem", 
-                cursor: "pointer", 
-                transition: "background 0.2s" 
-              }}
+              style={styles.addToCartButton(added)}
             >
               {added ? "Сагсанд нэмэгдлээ!" : isPattern ? "Загвар сагслах" : `Сагсанд нэмэх (${quantity})`}
             </button>
 
             <button 
               onClick={buyNow}
-              style={{ 
-                background: "transparent", 
-                color: "var(--color-forest)", 
-                border: "2px solid var(--color-forest)", 
-                padding: "14px", 
-                borderRadius: "8px", 
-                fontWeight: "700", 
-                fontSize: "1.1rem", 
-                cursor: "pointer",
-                transition: "opacity 0.2s" 
-              }}
+              style={styles.buyNowButton}
             >
               {isPattern ? "Загварыг шууд худалдаж авах " : "Шууд худалдаж авах "}
             </button>

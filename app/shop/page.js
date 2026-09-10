@@ -4,6 +4,149 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
+const styles = {
+  loadingContainer: {
+    textAlign: "center",
+    padding: "80px",
+    fontSize: "1.2rem",
+    color: "var(--color-forest)",
+  },
+  mainContainer: {
+    maxWidth: "1200px",
+    margin: "0 auto",
+    padding: "40px 20px",
+  },
+  headerBox: {
+    textAlign: "center",
+    marginBottom: "40px",
+  },
+  title: {
+    fontSize: "2.5rem",
+    color: "var(--color-forest)",
+    marginBottom: "10px",
+  },
+  subtitle: {
+    color: "var(--color-text)",
+    opacity: 0.8,
+    fontSize: "1.1rem",
+  },
+  filterBar: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: "20px",
+    marginBottom: "30px",
+    background: "var(--color-bg)",
+    border: "1px solid var(--color-forest)",
+    padding: "20px",
+    borderRadius: "12px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  filterGroup: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+  },
+  filterLabel: {
+    fontWeight: "600",
+    color: "var(--color-forest)",
+  },
+  selectBox: {
+    padding: "8px 12px",
+    borderRadius: "8px",
+    border: "1px solid var(--color-forest)",
+    outline: "none",
+    fontWeight: "500",
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+  },
+  optionStyle: {
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+  },
+  emptyState: {
+    textAlign: "center",
+    padding: "60px",
+    color: "var(--color-text)",
+    opacity: 0.7,
+    fontSize: "1.1rem",
+  },
+  gridContainer: {
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+    gap: "30px",
+  },
+  productCard: {
+    background: "var(--color-bg)",
+    border: "1px solid var(--color-forest)",
+    borderRadius: "12px",
+    overflow: "hidden",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
+    display: "flex",
+    flexDirection: "column",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  imageWrapper: {
+    width: "100%",
+    height: "220px",
+    background: "rgba(0,0,0,0.05)",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  cardContent: {
+    padding: "20px",
+    display: "flex",
+    flexDirection: "column",
+    flex: 1,
+    justifyContent: "space-between",
+  },
+  categoryBadge: {
+    fontSize: "0.85rem",
+    textTransform: "uppercase",
+    color: "var(--color-forest)",
+    fontWeight: "600",
+    letterSpacing: "0.5px",
+  },
+  productTitle: {
+    margin: "8px 0",
+    fontSize: "1.2rem",
+    color: "var(--color-forest)",
+  },
+  productDesc: {
+    color: "var(--color-text)",
+    opacity: 0.85,
+    fontSize: "0.95rem",
+    margin: "0 0 15px 0",
+    lineHeight: "1.4",
+  },
+  cardFooter: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: "15px",
+  },
+  productPrice: {
+    fontSize: "1.25rem",
+    fontWeight: "700",
+    color: "var(--color-forest)",
+  },
+  detailsButton: {
+    background: "var(--color-forest)",
+    color: "var(--color-bg)",
+    padding: "8px 16px",
+    borderRadius: "8px",
+    textDecoration: "none",
+    fontSize: "0.9rem",
+    fontWeight: "600",
+    border: "1px solid var(--color-forest)",
+  },
+};
+
 function ShopContent() {
   const searchParams = useSearchParams();
   const mainCategoryFilter = searchParams.get("category");
@@ -70,137 +213,86 @@ function ShopContent() {
   });
 
   if (loading) {
-    return <div style={{ textAlign: "center", padding: "80px", fontSize: "1.2rem", color: "var(--color-forest)" }}>Дулаан бараануудыг ачаалж байна... </div>;
+    return <div style={styles.loadingContainer}>Дулаан бараануудыг ачаалж байна... </div>;
   }
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 20px" }}>
-      <div style={{ textAlign: "center", marginBottom: "40px" }}>
-        <h1 style={{ fontSize: "2.5rem", color: "var(--color-forest)", marginBottom: "10px" }}>
+    <div style={styles.mainContainer}>
+      <div style={styles.headerBox}>
+        <h1 style={styles.title}>
           {mainCategoryFilter === "item" ? "Нэхмэл бүтээгдэхүүн" : mainCategoryFilter === "pattern" ? "Цахим загварууд" : "Нэхмэлийн дэлгүүр"}
         </h1>
-        <p style={{ color: "var(--color-text)", opacity: 0.8, fontSize: "1.1rem" }}>
+        <p style={styles.subtitle}>
           Хайраа шингээж урласан сүлжмэл бүтээгдэхүүн болон загваруудаас сонгоорой.
         </p>
       </div>
 
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "space-between", 
-        alignItems: "center", 
-        flexWrap: "wrap", 
-        gap: "20px", 
-        marginBottom: "30px",
-        background: "var(--color-bg)",
-        border: "1px solid var(--color-forest)",
-        padding: "20px",
-        borderRadius: "12px",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-        transition: "background-color 0.3s ease, border-color 0.3s ease"
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Шүүх:</label>
+      <div style={styles.filterBar}>
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>Шүүх:</label>
           <select 
             value={selectedCategory} 
             onChange={(e) => setSelectedCategory(e.target.value)}
-            style={{ 
-              padding: "8px 12px", 
-              borderRadius: "8px", 
-              border: "1px solid var(--color-forest)", 
-              outline: "none", 
-              fontWeight: "500", 
-              background: "var(--color-bg)", 
-              color: "var(--color-text)" 
-            }}
+            style={styles.selectBox}
           >
-            <option value="all" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Бүх дэд ангилал</option>
-            <option value="keychain" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Түлхүүрийн оосор</option>
-            <option value="plushie" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Тоглоом</option>
-            <option value="hat" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Малгай</option>
-            <option value="earwarmer" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Чихэвч (Чихэвчтэй ороолт)</option>
-            <option value="scarf" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Ороолт</option>
-            <option value="purse & pouch" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Цүнх болон түрийвч</option>
-            <option value="flowers" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Цэцэг</option>
+            <option value="all" style={styles.optionStyle}>Бүх дэд ангилал</option>
+            <option value="keychain" style={styles.optionStyle}>Түлхүүрийн оосор</option>
+            <option value="plushie" style={styles.optionStyle}>Тоглоом</option>
+            <option value="hat" style={styles.optionStyle}>Малгай</option>
+            <option value="earwarmer" style={styles.optionStyle}>Чихэвч (Чихэвчтэй ороолт)</option>
+            <option value="scarf" style={styles.optionStyle}>Ороолт</option>
+            <option value="purse & pouch" style={styles.optionStyle}>Цүнх болон түрийвч</option>
+            <option value="flowers" style={styles.optionStyle}>Цэцэг</option>
           </select>
         </div>
 
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <label style={{ fontWeight: "600", color: "var(--color-forest)" }}>Эрэмбэлэх:</label>
+        <div style={styles.filterGroup}>
+          <label style={styles.filterLabel}>Эрэмбэлэх:</label>
           <select 
             value={sortBy} 
             onChange={(e) => setSortBy(e.target.value)}
-            style={{ 
-              padding: "8px 12px", 
-              borderRadius: "8px", 
-              border: "1px solid var(--color-forest)", 
-              outline: "none", 
-              fontWeight: "500", 
-              background: "var(--color-bg)", 
-              color: "var(--color-text)" 
-            }}
+            style={styles.selectBox}
           >
-            <option value="newest" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Хамгийн шинэ нь</option>
-            <option value="price-asc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Үнэ: Хямдаас өндөр рүү</option>
-            <option value="price-desc" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Үнэн: Өндөрөөс хямд руу</option>
-            <option value="name" style={{ background: "var(--color-bg)", color: "var(--color-text)" }}>Нэрээр: А-Я</option>
+            <option value="newest" style={styles.optionStyle}>Хамгийн шинэ нь</option>
+            <option value="price-asc" style={styles.optionStyle}>Үнэ: Хямдаас өндөр рүү</option>
+            <option value="price-desc" style={styles.optionStyle}>Үнэн: Өндөрөөс хямд руу</option>
+            <option value="name" style={styles.optionStyle}>Нэрээр: А-Я</option>
           </select>
         </div>
       </div>
 
       {sortedProducts.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "60px", color: "var(--color-text)", opacity: 0.7, fontSize: "1.1rem" }}>
+        <div style={styles.emptyState}>
           Таны шүүлтүүрт тохирох бүтээгдэхүүн олдсонгүй.
         </div>
       ) : (
-        <div style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", 
-          gap: "30px" 
-        }}>
+        <div style={styles.gridContainer}>
           {sortedProducts.map((product) => (
-            <div className="product-card" key={product._id} style={{ 
-              background: "var(--color-bg)", 
-              border: "1px solid var(--color-forest)",
-              borderRadius: "12px", 
-              overflow: "hidden", 
-              boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
-              display: "flex",
-              flexDirection: "column",
-              transition: "background-color 0.3s ease, border-color 0.3s ease"
-            }}>
-              <div style={{ width: "100%", height: "220px", background: "rgba(0,0,0,0.05)" }}>
+            <div className="product-card" key={product._id} style={styles.productCard}>
+              <div style={styles.imageWrapper}>
                 <img 
                   src={product.imageUrl} 
                   alt={product.name} 
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                  style={styles.image} 
                 />
               </div>
-              <div style={{ padding: "20px", display: "flex", flexDirection: "column", flex: 1, justifyContent: "space-between" }}>
+              <div style={styles.cardContent}>
                 <div>
-                  <span style={{ fontSize: "0.85rem", textTransform: "uppercase", color: "var(--color-forest)", fontWeight: "600", letterSpacing: "0.5px" }}>
+                  <span style={styles.categoryBadge}>
                     {product.subCategory || product.category}
                   </span>
-                  <h3 style={{ margin: "8px 0", fontSize: "1.2rem", color: "var(--color-forest)" }}>
+                  <h3 style={styles.productTitle}>
                     {product.name}
                   </h3>
-                  <p style={{ color: "var(--color-text)", opacity: 0.85, fontSize: "0.95rem", margin: "0 0 15px 0", lineHeight: "1.4" }}>
+                  <p style={styles.productDesc}>
                     {product.description}
                   </p>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "15px" }}>
-                  <span style={{ fontSize: "1.25rem", fontWeight: "700", color: "var(--color-forest)" }}>
+                <div style={styles.cardFooter}>
+                  <span style={styles.productPrice}>
                     ₮{product.price.toLocaleString()}
                   </span>
-                  <Link href={`/shop/${product._id}`} style={{ 
-                    background: "var(--color-forest)", 
-                    color: "var(--color-bg)", 
-                    padding: "8px 16px", 
-                    borderRadius: "8px", 
-                    textDecoration: "none", 
-                    fontSize: "0.9rem", 
-                    fontWeight: "600",
-                    border: "1px solid var(--color-forest)"
-                  }}>
+                  <Link href={`/shop/${product._id}`} style={styles.detailsButton}>
                     Дэлгэрэнгүй
                   </Link>
                 </div>
@@ -215,7 +307,7 @@ function ShopContent() {
 
 export default function ShopPage() {
   return (
-    <Suspense fallback={<div style={{ textAlign: "center", padding: "80px", color: "var(--color-forest)" }}>Дэлгүүрийг ачаалж байна... </div>}>
+    <Suspense fallback={<div style={styles.loadingContainer}>Дэлгүүрийг ачаалж байна... </div>}>
       <ShopContent />
     </Suspense>
   );

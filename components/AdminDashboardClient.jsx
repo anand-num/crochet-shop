@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 
 const DEFAULT_SUB_CATEGORIES = [
@@ -8,8 +9,145 @@ const DEFAULT_SUB_CATEGORIES = [
   "earwarmer", 
   "scarf", 
   "purse & pouch", 
-  "flowes"
+  "flowers"
 ];
+
+const styles = {
+  mainContainer: {
+    padding: "40px 20px",
+    maxWidth: "1000px",
+    margin: "0 auto",
+  },
+  title: {
+    color: "var(--color-forest)",
+    marginBottom: "20px",
+    textAlign: "center",
+  },
+  tabContainer: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "10px",
+    marginBottom: "30px",
+    flexWrap: "wrap",
+  },
+  tabButton: (isActive) => ({
+    padding: "10px 20px",
+    borderRadius: "8px",
+    border: "2px solid var(--color-forest)",
+    background: isActive ? "var(--color-forest)" : "transparent",
+    color: isActive ? "var(--color-bg)" : "var(--color-forest)",
+    fontWeight: "bold",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease, color 0.3s ease",
+  }),
+  sectionTitle: {
+    color: "var(--color-forest)",
+    marginBottom: "20px",
+  },
+  orderCard: {
+    border: "2px solid var(--color-forest)",
+    padding: "20px",
+    borderRadius: "10px",
+    background: "var(--color-bg)",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  selectBox: {
+    padding: "6px 10px",
+    borderRadius: "6px",
+    border: "1px solid var(--color-forest)",
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+  },
+  formBox: {
+    border: "2px solid var(--color-forest)",
+    padding: "30px",
+    borderRadius: "12px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "20px",
+    background: "var(--color-bg)",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  label: {
+    display: "block",
+    fontWeight: "600",
+    marginBottom: "5px",
+    color: "var(--color-forest)",
+  },
+  input: {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid var(--color-forest)",
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+  },
+  textarea: {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid var(--color-forest)",
+    background: "var(--color-bg)",
+    color: "var(--color-text)",
+    fontFamily: "inherit",
+  },
+  stockBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: "10px",
+    background: "var(--color-bg)",
+    padding: "12px",
+    borderRadius: "6px",
+    border: "1px solid var(--color-forest)",
+  },
+  submitButton: {
+    background: "var(--color-forest)",
+    color: "var(--color-bg)",
+    padding: "12px",
+    borderRadius: "8px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    border: "none",
+  },
+  productCardInStock: {
+    border: "2px solid var(--color-forest)",
+    padding: "15px",
+    borderRadius: "10px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "var(--color-bg)",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  productCardOutStock: {
+    border: "2px solid #d9534f",
+    padding: "15px",
+    borderRadius: "10px",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    background: "var(--color-bg)",
+    transition: "background-color 0.3s ease, border-color 0.3s ease",
+  },
+  editButton: {
+    background: "var(--color-forest)",
+    color: "var(--color-bg)",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+  deleteButton: {
+    background: "#d9534f",
+    color: "#fff",
+    border: "none",
+    padding: "8px 12px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+};
 
 export default function AdminDashboardClient() {
   const [activeTab, setActiveTab] = useState("orders"); 
@@ -193,51 +331,27 @@ export default function AdminDashboardClient() {
   const outOfStockProducts = products.filter(p => p.inStock === false);
 
   return (
-    <main style={{ padding: "40px 20px", maxWidth: "1000px", margin: "0 auto" }}>
-      <h1 style={{ color: "var(--color-forest)", marginBottom: "20px", textAlign: "center" }}>
+    <main style={styles.mainContainer}>
+      <h1 style={styles.title}>
         Enoki.vibes Админ Хэсэг 
       </h1>
 
-      <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginBottom: "30px", flexWrap: "wrap" }}>
+      <div style={styles.tabContainer}>
         <button 
           onClick={() => setActiveTab("orders")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "8px",
-            border: "2px solid var(--color-forest)",
-            background: activeTab === "orders" ? "var(--color-forest)" : "transparent",
-            color: activeTab === "orders" ? "var(--color-bg)" : "var(--color-forest)",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+          style={styles.tabButton(activeTab === "orders")}
         >
           Захиалга удирдах 
         </button>
         <button 
           onClick={() => { cancelEdit(); setActiveTab("products"); }}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "8px",
-            border: "2px solid var(--color-forest)",
-            background: activeTab === "products" ? "var(--color-forest)" : "transparent",
-            color: activeTab === "products" ? "var(--color-bg)" : "var(--color-forest)",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+          style={styles.tabButton(activeTab === "products")}
         >
           {editingProduct ? "Бараа засварлах" : "Шинэ бараа нэмэх"}
         </button>
         <button 
           onClick={() => setActiveTab("manage")}
-          style={{
-            padding: "10px 20px",
-            borderRadius: "8px",
-            border: "2px solid var(--color-forest)",
-            background: activeTab === "manage" ? "var(--color-forest)" : "transparent",
-            color: activeTab === "manage" ? "var(--color-bg)" : "var(--color-forest)",
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+          style={styles.tabButton(activeTab === "manage")}
         >
           Бараа жагсаалт & Засвар 
         </button>
@@ -245,7 +359,7 @@ export default function AdminDashboardClient() {
 
       {activeTab === "orders" && (
         <div>
-          <h2 style={{ color: "var(--color-forest)", marginBottom: "20px" }}>Хэрэглэгчийн захиалгууд</h2>
+          <h2 style={styles.sectionTitle}>Хэрэглэгчийн захиалгууд</h2>
           {loadingOrders ? (
             <p>Ачаалж байна...</p>
           ) : orders.length === 0 ? (
@@ -253,7 +367,7 @@ export default function AdminDashboardClient() {
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               {orders.map((order) => (
-                <div key={order._id} style={{ border: "2px solid var(--color-forest)", padding: "20px", borderRadius: "10px", background: "var(--color-bg)" }}>
+                <div key={order._id} style={styles.orderCard}>
                   <p><strong>Захиалгын ID:</strong> {order._id}</p>
                   <p><strong>Нийт дүн:</strong> ₮{order.totalAmount?.toLocaleString()}</p>
                   
@@ -262,7 +376,7 @@ export default function AdminDashboardClient() {
                     <select 
                       value={order.status || "making"} 
                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+                      style={styles.selectBox}
                     >
                       <option value="making">Хийгдэж буй</option>
                       <option value="shipped">Хүргэлтэд гарсан</option>
@@ -276,7 +390,7 @@ export default function AdminDashboardClient() {
       )}
 
       {activeTab === "products" && (
-        <form onSubmit={handleFormSubmit} style={{ border: "2px solid var(--color-forest)", padding: "30px", borderRadius: "12px", display: "flex", flexDirection: "column", gap: "20px" }}>
+        <form onSubmit={handleFormSubmit} style={styles.formBox}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h2 style={{ color: "var(--color-forest)", margin: 0 }}>
               {editingProduct ? `Засварлаж байна: ${editingProduct.name}` : "Шинэ бүтээгдэхүүн эсвэл загвар нэмэх"}
@@ -293,33 +407,33 @@ export default function AdminDashboardClient() {
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Нэр:</label>
+            <label style={styles.label}>Нэр:</label>
             <input 
               type="text" 
               value={name} 
               onChange={(e) => setName(e.target.value)} 
               required 
-              style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+              style={styles.input}
             />
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Үнэ (₮):</label>
+            <label style={styles.label}>Үнэ (₮):</label>
             <input 
               type="number" 
               value={price} 
               onChange={(e) => setPrice(e.target.value)} 
               required 
-              style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+              style={styles.input}
             />
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Төрөл (Category):</label>
+            <label style={styles.label}>Төрөл (Category):</label>
             <select 
               value={category} 
               onChange={(e) => setCategory(e.target.value)}
-              style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+              style={styles.input}
             >
               <option value="item">Бүтээгдэхүүн (Physical Item)</option>
               <option value="pattern">Цахим загвар (PDF Pattern)</option>
@@ -327,7 +441,7 @@ export default function AdminDashboardClient() {
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Дэд төрөл (Sub-category):</label>
+            <label style={styles.label}>Дэд төрөл (Sub-category):</label>
             {!isAddingNewSub ? (
               <div style={{ display: "flex", gap: "10px" }}>
                 <select 
@@ -341,7 +455,7 @@ export default function AdminDashboardClient() {
                     }
                   }}
                   required
-                  style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+                  style={styles.input}
                 >
                   <option value="">-- Дэд төрөл сонгоно уу --</option>
                   {subCategories.map((sub, index) => (
@@ -358,7 +472,7 @@ export default function AdminDashboardClient() {
                   value={subCategory}
                   onChange={(e) => setSubCategory(e.target.value)}
                   required
-                  style={{ flex: 1, padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}
+                  style={{ flex: 1, ...styles.input }}
                 />
                 <button 
                   type="button"
@@ -372,17 +486,17 @@ export default function AdminDashboardClient() {
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>Тайлбар (Description):</label>
+            <label style={styles.label}>Тайлбар (Description):</label>
             <textarea 
               value={description} 
               onChange={(e) => setDescription(e.target.value)} 
               required 
               rows={3}
-              style={{ width: "100%", padding: "10px", borderRadius: "6px", border: "1px solid var(--color-forest)", fontFamily: "inherit" }}
+              style={styles.textarea}
             />
           </div>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f9f9f9", padding: "12px", borderRadius: "6px", border: "1px solid var(--color-forest)" }}>
+          <div style={styles.stockBox}>
             <input 
               type="checkbox" 
               id="inStockCheckbox"
@@ -390,13 +504,13 @@ export default function AdminDashboardClient() {
               onChange={(e) => setInStock(e.target.checked)} 
               style={{ width: "20px", height: "20px", cursor: "pointer" }}
             />
-            <label htmlFor="inStockCheckbox" style={{ fontWeight: "600", cursor: "pointer" }}>
+            <label htmlFor="inStockCheckbox" style={{ fontWeight: "600", cursor: "pointer", color: "var(--color-forest)" }}>
               {inStock ? "In stock" : "Out of stock"}
             </label>
           </div>
 
           <div>
-            <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>
+            <label style={styles.label}>
               Бүтээгдэхүүний зураг (Image) {editingProduct ? "(Шинээр солих бол оруулна уу)" : ""}:
             </label>
             <input 
@@ -404,12 +518,13 @@ export default function AdminDashboardClient() {
               accept="image/*"
               onChange={(e) => setImageFile(e.target.files[0])} 
               required={!editingProduct} 
+              style={{ color: "var(--color-text)" }}
             />
           </div>
 
           {category === "pattern" && (
             <div>
-              <label style={{ display: "block", fontWeight: "600", marginBottom: "5px" }}>
+              <label style={styles.label}>
                 Загварын PDF файл {editingProduct ? "(Шинээр солих бол оруулна уу)" : ""}:
               </label>
               <input 
@@ -417,6 +532,7 @@ export default function AdminDashboardClient() {
                 accept="application/pdf"
                 onChange={(e) => setPdfFile(e.target.files[0])} 
                 required={!editingProduct && category === "pattern"} 
+                style={{ color: "var(--color-text)" }}
               />
             </div>
           )}
@@ -424,15 +540,7 @@ export default function AdminDashboardClient() {
           <button 
             type="submit" 
             disabled={uploading}
-            style={{ 
-              background: "var(--color-forest)", 
-              color: "var(--color-bg)", 
-              padding: "12px", 
-              borderRadius: "8px", 
-              fontWeight: "bold", 
-              cursor: "pointer",
-              border: "none"
-            }}
+            style={styles.submitButton}
           >
             {uploading ? "Нийтэлж байна..." : editingProduct ? "Өөрчлөлтийг хадгалах" : "Бүтээгдэхүүн нэмэх"}
           </button>
@@ -443,7 +551,7 @@ export default function AdminDashboardClient() {
 
       {activeTab === "manage" && (
         <div>
-          <h2 style={{ color: "var(--color-forest)", marginBottom: "25px" }}>Бүх бараанууд ({products.length})</h2>
+          <h2 style={styles.sectionTitle}>Бүх бараанууд ({products.length})</h2>
           
           {products.length === 0 ? (
             <p>Одоогоор бараа байхгүй байна.</p>
@@ -456,28 +564,28 @@ export default function AdminDashboardClient() {
                 </h3>
                 
                 {inStockProducts.length === 0 ? (
-                  <p style={{ fontStyle: "italic", color: "#666" }}>Бэлэн байгаа бараа алга байна.</p>
+                  <p style={{ fontStyle: "italic", color: "var(--color-text)", opacity: 0.7 }}>Бэлэн байгаа бараа алга байна.</p>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                     {inStockProducts.map((prod) => (
-                      <div key={prod._id} style={{ border: "2px solid var(--color-forest)", padding: "15px", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--color-bg)" }}>
+                      <div key={prod._id} style={styles.productCardInStock}>
                         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                           {prod.imageUrl && <img src={prod.imageUrl} alt={prod.name} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px" }} />}
                           <div>
                             <h4 style={{ margin: "0 0 5px 0", color: "var(--color-forest)" }}>{prod.name}</h4>
-                            <p style={{ margin: 0, fontSize: "0.9rem" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
+                            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-text)" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: "10px" }}>
                           <button 
                             onClick={() => startEditing(prod)}
-                            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                            style={styles.editButton}
                           >
                             Засах 
                           </button>
                           <button 
                             onClick={() => handleDeleteProduct(prod._id)}
-                            style={{ background: "#d9534f", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                            style={styles.deleteButton}
                           >
                             Устгах 
                           </button>
@@ -494,28 +602,28 @@ export default function AdminDashboardClient() {
                 </h3>
                 
                 {outOfStockProducts.length === 0 ? (
-                  <p style={{ fontStyle: "italic", color: "#666" }}>Дууссан бараа байхгүй байна.</p>
+                  <p style={{ fontStyle: "italic", color: "var(--color-text)", opacity: 0.7 }}>Дууссан бараа байхгүй байна.</p>
                 ) : (
                   <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
                     {outOfStockProducts.map((prod) => (
-                      <div key={prod._id} style={{ border: "2px solid #d9534f", padding: "15px", borderRadius: "10px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "#fff5f5" }}>
+                      <div key={prod._id} style={styles.productCardOutStock}>
                         <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                           {prod.imageUrl && <img src={prod.imageUrl} alt={prod.name} style={{ width: "50px", height: "50px", objectFit: "cover", borderRadius: "6px", opacity: 0.7 }} />}
                           <div>
                             <h4 style={{ margin: "0 0 5px 0", color: "#d9534f" }}>{prod.name}</h4>
-                            <p style={{ margin: 0, fontSize: "0.9rem" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
+                            <p style={{ margin: 0, fontSize: "0.9rem", color: "var(--color-text)" }}>₮{prod.price?.toLocaleString()} | {prod.category} ({prod.subCategory})</p>
                           </div>
                         </div>
                         <div style={{ display: "flex", gap: "10px" }}>
                           <button 
                             onClick={() => startEditing(prod)}
-                            style={{ background: "var(--color-forest)", color: "var(--color-bg)", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                            style={styles.editButton}
                           >
                             Засах 
                           </button>
                           <button 
                             onClick={() => handleDeleteProduct(prod._id)}
-                            style={{ background: "#d9534f", color: "#fff", border: "none", padding: "8px 12px", borderRadius: "6px", cursor: "pointer", fontWeight: "bold" }}
+                            style={styles.deleteButton}
                           >
                             Устгах 
                           </button>
