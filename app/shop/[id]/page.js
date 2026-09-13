@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 
@@ -170,6 +170,10 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
+  // Animation states & references
+  const [flyingImage, setFlyingImage] = useState(null);
+  const imageRef = useRef(null);
+
   useEffect(() => {
     if (!id) return;
     fetch(`/api/products`)
@@ -194,9 +198,38 @@ export default function ProductDetailPage() {
     });
   };
 
-  const addToCart = () => {
+  const addToCart = (e) => {
     if (!product) return;
 
+    // 1. Trigger the Fly-to-Cart Animation from product image position
+    if (imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      
+      // Target cart icon location (top right header area)
+      const cartX = window.innerWidth - 60;
+      const cartY = 30;
+
+      const startX = rect.left;
+      const startY = rect.top;
+
+      const deltaX = cartX - startX;
+      const deltaY = cartY - startY;
+
+      setFlyingImage({
+        top: `${startY}px`,
+        left: `${startX}px`,
+        "--fly-x-mid": `${deltaX * 0.5}px`,
+        "--fly-y-mid": `${deltaY * 0.3 - 60}px`,
+        "--fly-end-x": `${deltaX}px`,
+        "--fly-end-y": `${deltaY}px`,
+      });
+
+      setTimeout(() => {
+        setFlyingImage(null);
+      }, 800);
+    }
+
+    // 2. Cart Logic
     const qtyToAdd = product.category === "pattern" ? 1 : quantity;
 
     const existingCart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -254,7 +287,8 @@ export default function ProductDetailPage() {
       </Link>
 
       <div style={styles.gridContainer}>
-        <div style={styles.imageWrapper}>
+        {/* Added ref here to track the starting point for the animation */}
+        <div style={styles.imageWrapper} ref={imageRef}>
           <img 
             src={product.imageUrl} 
             alt={product.name} 
@@ -313,6 +347,15 @@ export default function ProductDetailPage() {
           </div>
         </div>
       </div>
+
+      {flyingImage && (
+        <img 
+          src={product.imageUrl} 
+          alt="Flying item" 
+          className="flying-item" 
+          style={flyingImage} 
+        />
+      )}
     </main>
   );
 }
